@@ -5,9 +5,8 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-// import {storeStateMiddleWare} from './middlewares/storeStateMiddleWare';
 import reducer from './redux/reducer';
-import Home from './components/Home';
+import App from './App';
 
 const store = createStore(
   reducer,
@@ -16,7 +15,7 @@ const store = createStore(
 
 ReactDOM.render((
   <Provider store={store}>
-    <Home />
+    <App />
   </Provider>
 ), document.getElementById('app')); // eslint-disable-line no-undef
 

@@ -1,14 +1,17 @@
+import socketio from 'socket.io-client';
+
 import {
   SET_USERNAME,
   SET_SOCKET,
-  ROOM_JOINED,
+  SET_ROOM,
   SET_ADMIN,
-  SET_ROOM_STATE,
+  SET_ROOM_STATE, INIT_GAME,
 } from './actions/types';
 
+const socket = socketio('127.0.0.1:4001');
 const initialState = {
   username: '',
-  socket: null,
+  socket,
   currentRoom: null,
   isAdmin: false,
   roomState: 0, // 0: Login, 1: Ready, 2: Playing
@@ -26,7 +29,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state, username: action.payload,
       };
-    case ROOM_JOINED:
+    case SET_ROOM:
       return {
         ...state, currentRoom: action.payload,
       };
@@ -38,18 +41,13 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state, roomState: action.payload,
       };
+    case INIT_GAME:
+      return {
+        ...state, currentRoom: action.payload, roomState: 2,
+      };
     default:
       return state;
   }
 };
 
-// Catch logOut action to reinitialise state
-const rootReducer = (state, action) => {
-  let newState = state;
-  if (action.type === 'LOG_OUT') {
-    newState = undefined;
-  }
-  return authReducer(newState, action);
-};
-
-export default rootReducer;
+export default authReducer;
