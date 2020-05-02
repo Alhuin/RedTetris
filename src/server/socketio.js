@@ -1,27 +1,12 @@
-import uuid from 'uuid';
 import debug from 'debug';
-
-import {
-  CREATE_ROOM, JOIN_ROOM, START_GAME, DISCONNECT, IS_ROOM_AVAILABLE,
-  CHECK_ROOM_USER,
-} from './constants/events.js';
-
+import User from './models/User.js';
+import Room from './models/Room.js';
+import { events } from './constants/index.js';
 
 const logerror = debug('tetris:error');
 const loginfo = debug('tetris:info');
 const rooms = {};
 
-const createRoom = (roomName) => {
-  loginfo('createRoom(roomName:%o)', roomName);
-  const room = {
-    id: uuid.v4().toString(),
-    name: roomName,
-    users: [],
-    launched: false,
-  };
-  rooms[room.name] = room;
-  return rooms[room.name];
-};
 
 const createUsersList = (room) => {
   const { users } = room;
@@ -46,6 +31,7 @@ const joinRoom = (socket, room, user, cb) => {
     loginfo('user:%o joined room %o !', user.name, room.name);
 
     // Save roomId in socket
+    loginfo('user.room = room.name (%o)', room.name);
     user.room = room.name;
 
     // Add socket in db room
@@ -83,26 +69,21 @@ const leaveRooms = (socket, user) => {
 export default function handleSocket(socket, io) {
   loginfo('New client connected with id %o', socket.id);
 
-  const user = {
-    id: uuid.v4(),
-    name: '',
-    socket,
-    room: '',
-    isAdmin: false,
-  };
+  const user = User.init(socket);
 
-  socket.on(CREATE_ROOM, (roomName, username, cb) => {
+  socket.on(events.CREATE_ROOM, (roomName, username, cb) => {
     loginfo('Recieved createRoom from %o', username);
     user.name = username;
-    const room = createRoom(roomName);
+    const room = Room.init(roomName);
+    rooms[room.name] = room;
+    user.room = room.name;
     joinRoom(socket, room, user, cb);
   });
 
-  socket.on(JOIN_ROOM, (roomName, username, cb) => {
+  socket.on(events.JOIN_ROOM, (roomName, username, cb) => {
     loginfo('Recieved joinRoom %o from %o', roomName, username);
     const room = rooms[roomName];
 
-    loginfo('%O', room);
     if (room !== null) {
       user.name = username;
       joinRoom(socket, room, user, cb);
@@ -112,7 +93,7 @@ export default function handleSocket(socket, io) {
     }
   });
 
-  socket.on(IS_ROOM_AVAILABLE, (roomName, cb) => {
+  socket.on(events.IS_ROOM_AVAILABLE, (roomName, cb) => {
     const room = rooms[roomName];
 
     if (room === undefined) {
@@ -126,7 +107,7 @@ export default function handleSocket(socket, io) {
     }
   });
 
-  socket.on(CHECK_ROOM_USER, (roomName, username, cb) => {
+  socket.on(events.CHECK_ROOM_USER, (roomName, username, cb) => {
     const room = rooms[roomName];
     let status = false;
     let data = null;
@@ -150,16 +131,47 @@ export default function handleSocket(socket, io) {
     cb({ status, data });
   });
 
-  socket.on(START_GAME, () => {
+  socket.on(events.START_GAME, () => {
     const room = rooms[user.room];
     // const r = initGame(room);
     // loginfo('user %o launched %o game in room %o', user.name, room.name);
-    io.in(room.name).emit('startGame', room);
+    io.in(room.name).emit('start', room.pieces);
     // room.launched = true;
   });
 
-  socket.on(DISCONNECT, () => {
+  socket.on('newPiece', () => {
+    user.me.x = 4;
+    user.me.y = 0;
+    user.pieceIndex += 1;
+  });
+
+  socket.on(events.DISCONNECT, () => {
     loginfo('Client disconnected');
     leaveRooms(socket, user);
+  });
+
+  socket.on('move', (where) => {
+    const room = rooms[user.room];
+    switch (where) {
+      case 'up':
+        user.me.y -= 1;
+        break;
+      case 'down':
+        user.me.y += 1;
+        break;
+      case 'left':
+        user.me.x = user.me.x <= 0
+          ? user.me.x
+          : user.me.x - 1;
+        break;
+      case 'right':
+        user.me.x = user.me.x + room.pieces[user.pieceIndex][user.pieceState].width < 10
+          ? user.me.x + 1
+          : user.me.x;
+        break;
+      default:
+        break;
+    }
+    io.in(room.name).emit('userMoved', user.me);
   });
 }

@@ -9,12 +9,16 @@ import {
 } from './actions/types';
 
 const socket = socketio('127.0.0.1:4001');
+const buffer = new ArrayBuffer(32);
+
 const initialState = {
   username: '',
   socket,
   currentRoom: null,
   isAdmin: false,
   roomState: 0, // 0: Login, 1: Ready, 2: Playing
+  pieces: [],
+  cleanBoard: buffer,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -44,6 +48,14 @@ const authReducer = (state = initialState, action) => {
     case INIT_GAME:
       return {
         ...state, currentRoom: action.payload, roomState: 2,
+      };
+    case 'SET_PIECES':
+      return {
+        ...state, pieces: action.payload,
+      };
+    case 'SET_CLEAN_BOARD':
+      return {
+        ...state, cleanBoard: action.payload,
       };
     default:
       return state;

@@ -1,35 +1,28 @@
 const tetI = [
-  [
-    0, 0, 0, 0,
-    1, 1, 1, 1,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-  ],
-  [
-    0, 0, 1, 0,
-    0, 0, 1, 0,
-    0, 0, 1, 0,
-    0, 0, 1, 0,
-  ],
-  [
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    1, 1, 1, 1,
-    0, 0, 0, 0,
-  ],
-  [
-    0, 1, 0, 0,
-    0, 1, 0, 0,
-    0, 1, 0, 0,
-    0, 1, 0, 0,
-  ],
+  {
+    height: 1,
+    width: 4,
+    pattern: [{ mask: 15, length: 4 }],
+  },
+  {
+    height: 4,
+    width: 1,
+    pattern: [
+      { mask: 1, length: 1 },
+      { mask: 1, length: 1 },
+      { mask: 1, length: 1 },
+      { mask: 1, length: 1 },
+    ],
+  },
 ];
+
 const tetO = [
   [
     1, 1,
     1, 1,
   ],
 ];
+
 const tetT = [
   [
     0, 1, 0,
@@ -52,6 +45,7 @@ const tetT = [
     0, 1, 0,
   ],
 ];
+
 const tetJ = [
   [
     1, 0, 0,
@@ -74,6 +68,7 @@ const tetJ = [
     1, 1, 0,
   ],
 ];
+
 const tetL = [
   [
     0, 0, 1,
@@ -96,6 +91,7 @@ const tetL = [
     0, 1, 0,
   ],
 ];
+
 const tetZ = [
   [
     1, 1, 0,
@@ -118,6 +114,7 @@ const tetZ = [
     1, 0, 0,
   ],
 ];
+
 const tetS = [
   [
     0, 1, 1,
@@ -141,7 +138,7 @@ const tetS = [
   ],
 ];
 
-export default [
+const pieces = [
   tetI,
   tetO,
   tetT,
@@ -150,3 +147,5 @@ export default [
   tetZ,
   tetS,
 ];
+
+export default pieces;

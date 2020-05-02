@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { withRouter } from 'react-router';
 import { selectSocket } from '../redux/selectors';
 
 const checkParams = (roomName, username, setError) => {
@@ -29,10 +30,11 @@ function Home() {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
+  const dispatch = useDispatch();
 
   console.log(ready);
   return (ready
-    ? <Redirect to={`${roomName}[${username}]`} />
+    ? <Redirect to={{ pathname: `${roomName}[${username}]`, state: { ready } }} />
     : (
       <>
         <div>
@@ -63,7 +65,7 @@ function Home() {
             type="button"
             onClick={() => {
               if (checkParams(roomName, username, setError)) {
-                checkRoomAvailable(socket, roomName, username, setError, setReady);
+                checkRoomAvailable(socket, roomName, username, setError, setReady, dispatch);
               }
             }}
           >
@@ -76,4 +78,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default withRouter(Home);

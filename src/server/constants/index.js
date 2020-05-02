@@ -1,5 +1,10 @@
-import pieces from './pieces';
+import pieces from './pieces.js';
+import events from './events.js';
 
-export default {
+console.log(pieces);
+console.log(events);
+
+export {
   pieces,
+  events,
 };

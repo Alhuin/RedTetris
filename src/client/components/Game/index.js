@@ -1,14 +1,13 @@
 import React from 'react';
+import TestGrid from './TestGrid.js';
 
 function Game({ roomName, username }) {
   return (
-    <p>
-      User
-      {username}
-      {' '}
-      joined
-      {roomName}
-    </p>
+    <div id="gameContainer">
+      {/* <infos /> */}
+      <TestGrid />
+      {/* <pieces /> */}
+    </div>
   );
 }
 
