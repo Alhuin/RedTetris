@@ -17,7 +17,7 @@ const createUsersList = (room) => {
   for (const client in users) {
     const user = users[client];
     loginfo('%O', user);
-    usersList.push({ name: user.name, id: user.id });
+    usersList.push({ name: user.name, id: user.id, isAdmin: user.isAdmin });
   }
   return usersList;
 };

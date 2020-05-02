@@ -1,10 +1,15 @@
 import React from 'react';
-import Tetris from './components/Game/Tetris';
+import { Route, HashRouter } from 'react-router-dom';
+import Home from './components/Home/Home';
+import Tetris from './components/Tetris/Tetris';
 
-const App = () => (
-  <div className="App">
-    <Tetris />
-  </div>
-);
+function App() {
+  return (
+    <HashRouter basename="/" hashType="noslash">
+      <Route exact path="/" component={() => <Home />} />
+      <Route path="/:roomName[:username]" component={(props) => <Tetris {...props} />} />
+    </HashRouter>
+  );
+}
 
 export default App;

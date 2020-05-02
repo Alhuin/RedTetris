@@ -1,7 +1,7 @@
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const init = (socket) => ({
-  id: uuid.v4().toString(),
+  id: uuidv4().toString(),
   name: '',
   socket,
   room: '',
