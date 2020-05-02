@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import bgImg from '../../assets/images/bg.png';
 
 export const StyledLoginWrapper = styled.div`
   width: 100vw;
@@ -8,9 +7,6 @@ export const StyledLoginWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  background: url(${bgImg}) #000;
-  background-size: cover;
-  overflow: hidden;
 `;
 
 export const StyledLogin = styled.div`

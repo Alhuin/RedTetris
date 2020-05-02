@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StyledDisplay } from '../styles/StyledDisplay';
 
 const Display = ({ gameOver, text }) => (
@@ -6,5 +7,15 @@ const Display = ({ gameOver, text }) => (
     {text}
   </StyledDisplay>
 );
+
+Display.propTypes = {
+  gameOver: PropTypes.bool,
+  text: PropTypes.string,
+};
+
+Display.defaultProps = {
+  gameOver: false,
+  text: 'Info',
+};
 
 export default Display;

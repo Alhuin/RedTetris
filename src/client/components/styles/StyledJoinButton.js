@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 export const StyledJoinButton = styled.button`
+  min-width: 150px;
   box-sizing: border-box;
-  margin: 0 0 20px 0;
+  margin: 0 0 50px 0;
   padding: 20px;
   min-height: 30px;
   width: 20vw;

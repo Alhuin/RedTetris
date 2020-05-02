@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { selectSocket } from '../../redux/selectors';
 import { checkParams, checkRoomAvailable } from './helpers';
@@ -52,6 +53,21 @@ const Login = ({
       && <CustomAlert severity="warning" message={error} close={() => setError('')} />}
     </StyledLoginWrapper>
   );
+};
+
+Login.propTypes = {
+  roomName: PropTypes.string,
+  setRoomName: PropTypes.func.isRequired,
+  username: PropTypes.string,
+  setUsername: PropTypes.func.isRequired,
+  ready: PropTypes.bool,
+  setReady: PropTypes.func.isRequired,
+};
+
+Login.defaultProps = {
+  roomName: 'Tetris',
+  username: 'Anon',
+  ready: false,
 };
 
 export default Login;

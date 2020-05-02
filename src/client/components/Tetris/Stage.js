@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Cell from './Cell';
 import { StyledStage } from '../styles/StyledStage';
@@ -10,5 +11,9 @@ const Stage = ({ stage }) => (
     )}
   </StyledStage>
 );
+
+Stage.propTypes = {
+  stage: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.array)).isRequired,
+};
 
 export default Stage;

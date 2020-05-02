@@ -9,7 +9,6 @@ function Home() {
   const [username, setUsername] = useState('');
   const [ready, setReady] = useState(false);
 
-  console.log(ready);
   return (ready
     ? <Redirect to={{ pathname: `${roomName}[${username}]`, state: { ready } }} />
     : (

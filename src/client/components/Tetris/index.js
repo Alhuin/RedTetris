@@ -1,6 +1,7 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import { initStage, checkRoomAvailable } from './helpers';
 import Stage from './Stage';
@@ -10,7 +11,7 @@ import StartButton from './StartButtton';
 import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
 import { selectSocket } from '../../redux/selectors';
 
-const Tetris = ({ match, location }) => {
+const Tetris = ({ match, location, history }) => {
   const socket = useSelector(selectSocket);
   const [users, setUsers] = useState([{}]);
   const [checked, setChecked] = useState(null);
@@ -49,7 +50,8 @@ const Tetris = ({ match, location }) => {
     return <></>;
   }
   if (checked === false) {
-    return <Redirect to="/" />;
+    history.push('/');
+    // return <Redirect to="/" />;
   }
   return (
     <StyledTetrisWrapper>
@@ -71,6 +73,12 @@ const Tetris = ({ match, location }) => {
         : <p style={{ color: 'white' }}>chargement...</p>}
     </StyledTetrisWrapper>
   );
+};
+
+Tetris.propTypes = {
+  match: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default Tetris;
