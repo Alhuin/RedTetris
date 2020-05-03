@@ -29,6 +29,10 @@ export const StyledLogin = styled.div`
     font-size: 0.8rem
   }
   
+  input:hover::placeholder {
+    color: white;
+  }
+  
   input:focus::placeholder {
     color: transparent;
   }

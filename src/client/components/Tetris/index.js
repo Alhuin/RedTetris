@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { initStage, checkRoomAvailable } from './helpers';
-import Stage from './Stage';
-import Display from './Display';
+import Grid from './Grid';
+import Card from './Card';
 import Lobby from './Lobby';
 import StartButton from './StartButtton';
 import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
@@ -58,12 +58,12 @@ const Tetris = ({ match, location, history }) => {
       { checked
         ? (
           <StyledTetris>
-            <Stage stage={initStage()} />
+            <Grid stage={initStage()} />
             <aside>
               <div>
-                <Display text="Score" />
-                <Display text="Rows" />
-                <Display text="Level" />
+                <Card text="Score" />
+                <Card text="Rows" />
+                <Card text="Level" />
                 <Lobby users={users} />
               </div>
               <StartButton mode="Solo" />
