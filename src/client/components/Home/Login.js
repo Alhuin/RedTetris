@@ -50,7 +50,7 @@ const Login = ({
         }}
       />
       { error !== ''
-      && <CustomAlert severity="warning" message={error} close={() => setError('')} />}
+       && <CustomAlert severity="warning" message={error} close={() => setError('')} />}
     </StyledLoginWrapper>
   );
 };

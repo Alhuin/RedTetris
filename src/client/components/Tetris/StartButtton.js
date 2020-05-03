@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyledStartButton } from '../styles/StyledStartButton';
 
-const StartButton = ({ mode, cb }) => (
-  <StyledStartButton onClick={cb}>
+const StartButton = ({ mode, cb, disabled }) => (
+  <StyledStartButton type="button" onClick={cb} disabled={disabled}>
     Start
     {mode}
   </StyledStartButton>

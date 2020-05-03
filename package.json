@@ -9,7 +9,7 @@
   },
   "scripts": {
     "eslint": "eslint src",
-    "client-dist": "webpack --mode production",
+    "client-dist": "webpack-dev-server --mode production --config ./webpack.config.cjs",
     "client-dev": "webpack-dev-server --config ./webpack.config.cjs --progess --mode development",
     "srv-dev": "DEBUG=tetris:* nodemon src/server/index.js",
     "srv-dist": "DEBUG=tetris:* babel src --out-dir dist",
@@ -73,10 +73,12 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^4.0.0",
     "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
     "jsdom": "^16.2.2",
     "mocha": "^7.1.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
+    "webpack-bundle-analyzer": "^3.7.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   }

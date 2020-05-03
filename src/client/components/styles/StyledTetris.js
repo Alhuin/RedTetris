@@ -10,7 +10,6 @@ export const StyledTetris = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   padding: 40px;
   margin: 0 auto;
   max-width: 900px;

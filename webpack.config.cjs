@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   // 1
@@ -12,6 +12,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         use: [
           'style-loader',
           'css-loader',
@@ -19,6 +20,7 @@ module.exports = {
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'file-loader',
@@ -31,6 +33,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'file-loader',
@@ -40,20 +43,24 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['*', '.js'],
+    extensions: ['.png', '.js', '.css', '.woff'],
   },
   // 2
   output: {
-    path: `${__dirname}/client/dist`,
+    path: `${__dirname}/src/client/dist`,
     publicPath: '/',
     filename: 'bundle.js',
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      filename: './src/client/dist/index.html',
+      favicon: './src/client/favicon.ico',
+    }),
   ],
   // 3
   devServer: {
     contentBase: './src/client/dist',
+    disableHostCheck: true,
     hot: true,
   },
 };
