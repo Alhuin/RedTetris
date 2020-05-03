@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledStage = styled.div`
+export const StyledGrid = styled.div`
   width: 100%;
   display: grid;
   grid-template-rows: repeat(${(props) => props.height},calc(25vw / ${(props) => props.width}));

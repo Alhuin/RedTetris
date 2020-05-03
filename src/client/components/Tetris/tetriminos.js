@@ -1,5 +1,5 @@
 export const TETRIMINOS = {
-  0: {
+  0: { // empty tetrimino, the first displayed on the grid at Tetris landing
     shape: [[0]],
     color: '0,0,0',
   },
@@ -24,7 +24,7 @@ export const TETRIMINOS = {
   O: {
     shape: [
       ['O', 'O'],
-      ['0', '0'],
+      ['O', 'O'],
     ],
     color: '223, 217, 36',
   },
@@ -66,7 +66,7 @@ export const TETRIMINOS = {
 export const randomTetrimino = () => {
   const tetriminos = 'IJLOSTZ';
   // get random letter from the string
-  const random = tetriminos[Math.floor(Math.random * tetriminos.length)];
+  const random = tetriminos[Math.floor(Math.random() * tetriminos.length)];
 
   // return the corresponding tetrimino
   return TETRIMINOS[random];
