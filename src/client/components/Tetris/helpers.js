@@ -6,21 +6,21 @@ export const initGrid = () => Array.from(
   () => Array.from(Array(GRID_WIDTH)).fill([0, 'clear']),
 );
 
-export const checkParams = (roomName, username, setError) => {
+export const checkParams = (roomName, username, setError, dispatch) => {
   if (roomName === '' || username === '') {
-    setError('Fields can\'t be blank');
+    setError('Fields can\'t be blank', dispatch);
     return false;
   }
   return true;
 };
 
-export const checkRoomAvailable = (socket, roomName, username, cb) => socket.emit('isRoomAvailable', roomName, (data) => {
+export const checkRoomAvailable = (socket, roomName, username, setError, dispatch, cb) => socket.emit('isRoomAvailable', roomName, (data) => {
   if (data.status === true) {
     socket.emit(data.needCreate ? 'createRoom' : 'joinRoom', roomName, username, () => {
       cb();
     });
   } else {
-    console.log(data.error);
+    setError(data.error, dispatch);
     cb();
   }
 });

@@ -1,16 +1,21 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { selectLines, selectLevel, selectScore } from '../redux/selectors';
+import { setLines, setLevel, setScore } from '../redux/actions';
 
 export const useGameStatus = (linesCleared) => {
-  const [score, setScore] = useState(0);
-  const [lines, setLines] = useState(0);
-  const [level, setLevel] = useState(0);
+  const dispatch = useDispatch();
+  const score = useSelector(selectScore);
+  const lines = useSelector(selectLines);
+  const level = useSelector(selectLevel);
 
   const points = [40, 100, 300, 1200];
 
   const calcScore = useCallback(() => {
     if (linesCleared > 0) {
-      setScore((prev) => prev + points[linesCleared - 1] * (level + 1));
-      setLines((prev) => prev + linesCleared);
+      setScore(score + points[linesCleared - 1] * (level + 1), dispatch);
+      setLines(lines + linesCleared, dispatch);
     }
   }, [level, points, linesCleared]);
 
@@ -18,5 +23,5 @@ export const useGameStatus = (linesCleared) => {
     calcScore();
   }, [calcScore, linesCleared, score]);
 
-  return [score, setScore, level, setLevel, lines, setLines];
+  return [score, level, setLevel, lines];
 };

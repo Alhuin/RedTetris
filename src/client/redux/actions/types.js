@@ -1,6 +1,12 @@
 export const SET_USERNAME = 'SET_USERNAME';
-export const SET_SOCKET = 'SET_SOCKET';
-export const SET_ROOM = 'SET_ROOM';
-export const SET_ADMIN = 'SET_ADMIN';
-export const SET_ROOM_STATE = 'SET_ROOM_STATE';
-export const INIT_GAME = 'INIT_GAME';
+export const SET_ROOM_NAME = 'SET_ROOM_NAME';
+export const SET_DROP_TIME = 'SET_DROP_TIME';
+export const SET_PLAYER = 'SET_PLAYER';
+export const SET_GRID = 'SET_GRID';
+export const SET_ERROR = 'SET_ERROR';
+export const SET_GAME_STATUS = 'SET_GAME_STATUS';
+export const SET_LINES_CLEARED = 'SET_LINES_CLEARED';
+export const SET_LINES = 'SET_LINES';
+export const SET_SCORE = 'SET_SCORE';
+export const SET_LEVEL = 'SET_LEVEL';
+export const INCREMENT_LINES_CLEARED = 'INCREMENT_LINES_CLEARED';

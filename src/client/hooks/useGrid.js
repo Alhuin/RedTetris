@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react';
-import { initGrid } from '../components/Tetris/helpers';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { setLinesCleared, incrementLinesCleared } from '../redux/actions';
+import { selectGrid, selectLinesCleared } from '../redux/selectors';
+
+export const setGrid = (json) => ({ type: 'SET_GRID', payload: json });
 
 export const useGrid = (player, resetPlayer) => {
-  const [grid, setGrid] = useState(initGrid());
-  const [linesCleared, setLinesCleared] = useState(0);
+  const dispatch = useDispatch();
+  const grid = useSelector(selectGrid);
+  const linesCleared = useSelector(selectLinesCleared);
 
   // builds a fresh grid from the stored one (with merged tetriminos) and draws the current piece
   useEffect(() => {
-    setLinesCleared(0);
+    setLinesCleared(0, dispatch);
 
     const removeClearedLines = (newGrid) => newGrid
       .reduce((ack, line) => {
         if (line.findIndex((cell) => cell[0] === 0) === -1) { // if we find a line with no 0 (full)
-          setLinesCleared((prev) => prev + 1); // increment linesCleared number
+          incrementLinesCleared(dispatch); // increment linesCleared number
           // add a new empty line a the top of the grid
           ack.unshift(new Array(newGrid[0].length).fill([0, 'clear']));
           return ack;
@@ -28,6 +34,7 @@ export const useGrid = (player, resetPlayer) => {
         : cell)));
 
       // draw tetrimino on the fresh grid
+      // console.table(player.tetrimino);
       player.tetrimino.forEach((line, y) => {
         line.forEach((value, x) => {
           if (value !== 0) { // not an empty cell
@@ -38,7 +45,6 @@ export const useGrid = (player, resetPlayer) => {
           }
         });
       });
-
       // check if we collided
       if (player.collided) {
         resetPlayer();
@@ -48,7 +54,7 @@ export const useGrid = (player, resetPlayer) => {
     };
 
     // set new grid
-    setGrid((prev) => updateGrid(prev));
+    dispatch(setGrid(updateGrid(grid)));
   }, [player, resetPlayer]);
 
   return [grid, setGrid, linesCleared];

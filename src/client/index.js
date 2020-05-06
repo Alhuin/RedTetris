@@ -11,7 +11,7 @@ import App from './App';
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunk, createLogger()),
+  // applyMiddleware(thunk, createLogger()),
 );
 
 ReactDOM.render((
@@ -19,5 +19,3 @@ ReactDOM.render((
     <App />
   </Provider>
 ), document.getElementById('app')); // eslint-disable-line no-undef
-
-module.hot.accept();

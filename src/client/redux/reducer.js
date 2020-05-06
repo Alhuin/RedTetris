@@ -1,65 +1,123 @@
 import socketio from 'socket.io-client';
-
 import {
+  SET_ROOM_NAME,
+  SET_DROP_TIME,
   SET_USERNAME,
-  SET_SOCKET,
-  SET_ROOM,
-  SET_ADMIN,
-  SET_ROOM_STATE, INIT_GAME,
+  SET_PLAYER,
+  SET_GRID,
+  SET_LINES_CLEARED,
+  SET_LINES,
+  SET_SCORE,
+  SET_LEVEL,
+  INCREMENT_LINES_CLEARED,
+  SET_GAME_STATUS,
+  SET_ERROR,
 } from './actions/types';
+import { TETRIMINOS } from '../components/Tetris/tetriminos';
+import { GRID_WIDTH, initGrid } from '../components/Tetris/helpers';
 
-const socket = socketio('127.0.0.1:4001');
-const buffer = new ArrayBuffer(32);
-
+const socket = socketio('https://daf8d1c1.ngrok.io');
 const initialState = {
-  username: '',
   socket,
-  currentRoom: null,
-  isAdmin: false,
-  roomState: 0, // 0: Login, 1: Ready, 2: Playing
-  pieces: [],
-  cleanBoard: buffer,
+  username: '',
+  roomName: '',
+  error: '',
+  gameStatus: 0,
+  me: {
+    pos: { x: GRID_WIDTH / 2 - 2, y: 0 },
+    tetrimino: TETRIMINOS[0].shape,
+    collided: false,
+  },
+  opponent: {
+    pos: { x: GRID_WIDTH / 2 - 2, y: 0 },
+    tetrimino: TETRIMINOS[0].shape,
+  },
+  room: null,
+  dropTime: null,
+  grid: initGrid(),
+  linesCleared: 0,
+  lines: 0,
+  score: 0,
+  level: 0,
 };
 
-const authReducer = (state = initialState, action) => {
-  console.log(action.type);
-  console.log(action.payload);
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_SOCKET:
-      return {
-        ...state, socket: action.payload,
-      };
+    case SET_PLAYER: {
+      if (action.player === state.username) {
+        return { ...state, me: action.data };
+      }
+      return { ...state, opponent: action.data };
+    }
     case SET_USERNAME:
       return {
-        ...state, username: action.payload,
+        ...state,
+        username: action.payload,
       };
-    case SET_ROOM:
+    case SET_ROOM_NAME:
       return {
-        ...state, currentRoom: action.payload,
+        ...state,
+        roomName: action.payload,
       };
-    case SET_ADMIN:
+    case SET_ERROR:
       return {
-        ...state, isAdmin: action.payload,
+        ...state,
+        error: action.payload,
       };
-    case SET_ROOM_STATE:
+    case SET_GAME_STATUS:
       return {
-        ...state, roomState: action.payload,
+        ...state,
+        gameStatus: action.payload,
       };
-    case INIT_GAME:
+    case SET_DROP_TIME:
       return {
-        ...state, currentRoom: action.payload, roomState: 2,
+        ...state,
+        dropTime: action.payload,
       };
-    case 'SET_PIECES':
+    case SET_GRID:
       return {
-        ...state, pieces: action.payload,
+        ...state,
+        grid: action.payload,
       };
-    case 'SET_CLEAN_BOARD':
+    case SET_LINES_CLEARED:
       return {
-        ...state, cleanBoard: action.payload,
+        ...state,
+        linesCleared: action.payload,
+      };
+    case SET_LINES:
+      return {
+        ...state,
+        lines: action.payload,
+      };
+    case SET_SCORE:
+      return {
+        ...state,
+        score: action.payload,
+      };
+    case SET_LEVEL:
+      return {
+        ...state,
+        level: action.payload,
+      };
+    case INCREMENT_LINES_CLEARED: {
+      let { linesCleared } = state;
+
+      linesCleared += 1;
+      return {
+        ...state,
+        linesCleared,
+      };
+    }
+    case 'RESET_PLAYER':
+      return {
+        ...initialState,
+        socket,
+        username: state.username,
+        roomName: state.roomName,
       };
     default:
       return state;
   }
 };
 
-export default authReducer;
+export default reducer;

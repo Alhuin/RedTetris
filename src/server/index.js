@@ -1,5 +1,7 @@
 import express from 'express';
-import http from 'http';
+import * as https from 'https';
+import { Server } from 'http';
+import * as fs from 'fs';
 import socketio from 'socket.io';
 import debug from 'debug';
 
@@ -10,7 +12,16 @@ const port = process.env.PORT || 4001;
 const app = express();
 app.use(routes);
 
-const server = http.createServer(app);
+console.log(process.env.NODE_ENV);
+const server = (process.env.NODE_ENV === undefined)
+  ? https.createServer(
+    {
+      key: fs.readFileSync('/Users/julien/ssl/localhost.key'),
+      cert: fs.readFileSync('/Users/julien/ssl/localhost.crt'),
+    },
+    app,
+  ) : new Server(app);
+
 const io = socketio(server);
 
 io.on('connection', (socket) => handleSocket(socket, io));

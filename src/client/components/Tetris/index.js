@@ -1,10 +1,24 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { checkRoomAvailable, initGrid, checkCollision } from './helpers';
-import { selectSocket } from '../../redux/selectors';
+// Redux
+import {
+  checkRoomAvailable, initGrid, checkCollision, checkParams,
+} from './helpers';
+import {
+  selectDropTime,
+  selectGameStatus,
+  selectSocket,
+} from '../../redux/selectors';
+import {
+  setDropTime,
+  setGameStatus,
+  setError,
+  setUsername,
+  setRoomName,
+} from '../../redux/actions';
 
 // Custom Hooks
 import { useGrid } from '../../hooks/useGrid';
@@ -15,43 +29,56 @@ import { useGameStatus } from '../../hooks/useGameStatus';
 // Components
 import Grid from './Grid';
 import Card from './Card';
-// import Lobby from './Lobby';
+import Lobby from './Lobby';
 import StartButton from './StartButtton';
 import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
 
 
-const Tetris = ({ match, location, history }) => {
+const Tetris = ({ location, match, history }) => {
+  const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
+  const dropTime = useSelector(selectDropTime);
+  const gameStatus = useSelector(selectGameStatus);
 
-  const [dropTime, setDropTime] = useState(null);
-  // const [users, setUsers] = useState([{}]);
+  const [users, setUsers] = useState([{}]);
   const [checked, setChecked] = useState(null);
-  const [gameOver, setGameOver] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
   const isMounted = useRef(true);
 
-  const [player, updatePlayerPos, resetPlayer, rotateIfPossible] = usePlayer();
-  const [grid, setGrid, linesCleared] = useGrid(player, resetPlayer);
-  const [score, setScore, level, setLevel, lines, setLines] = useGameStatus(linesCleared);
   const { roomName, username } = match.params;
+  const [player, updatePlayerPos, resetPlayer, rotateIfPossible] = usePlayer(username);
+  const [grid, setGrid, linesCleared] = useGrid(player, resetPlayer);
+  const [score, level, setLevel, lines] = useGameStatus(linesCleared);
   let ready;
 
   if (location && location.state) {
     ready = location.state.ready;
   }
-  // console.log(`re-render, checked = ${checked}, ready = ${ready}`);
-  // useEffect(() => {
-  //   socket.on('userReady', setUsers);
-  // }, []);
 
   useEffect(() => {
+    // console.log('1');
+    socket.on('userReady', (usersL) => {
+      setUsers(usersL);
+    });
+  }, []);
+
+  // useEffect(() => {
+  // todo leave room, change username
+  // }, [roomName, username]);
+
+  useEffect(() => {
+    // console.log('ismounted ?', isMounted);
     if (isMounted.current) {
       if (ready === undefined) {
-        checkRoomAvailable(socket, roomName, username, () => {
-          socket.emit('checkRoomUser', roomName, username, (data) => {
-            setChecked(data.status);
+        console.log(roomName, username);
+        if (checkParams(roomName, username, setError, dispatch)) {
+          setUsername(username, dispatch);
+          setRoomName(roomName, dispatch);
+          checkRoomAvailable(socket, roomName, username, setError, dispatch, () => {
+            socket.emit('checkRoomUser', roomName, username, (data) => {
+              setChecked(data.status);
+            });
           });
-        });
+        }
       } else {
         socket.emit('checkRoomUser', roomName, username, (data) => {
           setChecked(data.status);
@@ -70,29 +97,24 @@ const Tetris = ({ match, location, history }) => {
   };
 
   const startGame = () => {
-    // reset grid, player, gameOver & dropTime
-    setGameStarted(true);
-    setGrid(initGrid());
-    setDropTime(800);
+    // reset grid, player, gameStatus & dropTime
+    setGameStatus(1, dispatch);
     resetPlayer();
-    setGameOver(false);
-    setScore(0);
-    setLines(0);
-    setLevel(0);
+    setDropTime(800, dispatch);
+    dispatch(setGrid(initGrid()));
   };
 
   const drop = () => {
     if (lines >= (level + 1) * 10) {
-      setLevel((prev) => prev + 1);
-      setDropTime((prev) => prev * 0.5);
+      setLevel(level + 1, dispatch);
+      setDropTime(dropTime * 0.5, dispatch);
     }
     if (!checkCollision(player, grid, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
     } else {
       if (player.pos.y < 1) {
-        setGameOver(true);
-        setGameStarted(false);
-        setDropTime(null);
+        setGameStatus(3, dispatch);
+        setDropTime(null, dispatch);
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }
@@ -103,7 +125,8 @@ const Tetris = ({ match, location, history }) => {
   };
 
   const move = ({ keyCode }) => {
-    if (!gameOver) {
+    // console.log(gameStatus);
+    if (gameStatus === 1) { // if playing
       if (keyCode === 37) {
         movePlayer(-1);
       } else if (keyCode === 39) {
@@ -112,29 +135,11 @@ const Tetris = ({ match, location, history }) => {
         dropPlayer();
       } else if (keyCode === 38) {
         rotateIfPossible(grid, 1);
-      } else if (keyCode === 32) {
+      } else if (keyCode === 32) { // todo hard drop
         console.log('space');
       }
     }
   };
-
-  useEffect(() => {
-    const eventListner = (e) => move(e);
-
-    window.addEventListener(
-      'keydown',
-      eventListner,
-      false,
-    );
-
-    return () => {
-      window.removeEventListener(
-        'keydown',
-        eventListner,
-        false,
-      );
-    };
-  });
 
   useInterval(() => {
     drop();
@@ -145,36 +150,35 @@ const Tetris = ({ match, location, history }) => {
   }
   if (checked === false) {
     history.push('/');
-    // return <Redirect to="/" />;
   }
 
   return (
-    <StyledTetrisWrapper role="buttton">
+    <StyledTetrisWrapper role="buttton" tabIndex="0" onKeyDown={move}>
       { checked
-        && (
-          <StyledTetris>
-            <Grid grid={grid} />
-            <aside>
-              {gameOver
-                ? <Card gameOver={gameOver} text={`Game Over: ${score} points`} />
-                : (
-                  <div>
-                    <Card text={`Score: ${score}`} />
-                    <Card text={`Lines: ${lines}`} />
-                    <Card text={`Level: ${level + 1}`} />
-                    {/* <Lobby users={users} /> */}
-                  </div>
-                )}
-              <StartButton
-                mode=""
-                disabled={gameStarted}
-                cb={() => {
-                  startGame();
-                }}
-              />
-            </aside>
-          </StyledTetris>
-        )}
+      && (
+        <StyledTetris>
+          <Grid grid={grid} />
+          <aside>
+            {gameStatus === 3
+              ? <Card gameOver={gameStatus === 3} text={`Game Over: ${score} points`} />
+              : (
+                <div>
+                  <Card text={`Score: ${score}`} />
+                  <Card text={`Lines: ${lines}`} />
+                  <Card text={`Level: ${level + 1}`} />
+                  <Lobby users={users} />
+                </div>
+              )}
+            <StartButton
+              mode=""
+              disabled={gameStatus === 2} // while playing
+              cb={() => {
+                startGame();
+              }}
+            />
+          </aside>
+        </StyledTetris>
+      )}
     </StyledTetrisWrapper>
   );
 };

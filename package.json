@@ -9,12 +9,14 @@
   },
   "scripts": {
     "eslint": "eslint src",
-    "client-dist": "webpack-dev-server --mode production --config ./webpack.config.cjs",
-    "client-dev": "webpack-dev-server --config ./webpack.config.cjs --progess --mode development",
+    "client-dist": "webpack -p --config ./webpack.prod.cjs",
+    "client-dev": "webpack-dev-server --open --config ./webpack.dev.cjs --progess",
     "srv-dev": "DEBUG=tetris:* nodemon src/server/index.js",
-    "srv-dist": "DEBUG=tetris:* babel src --out-dir dist",
+    "srv-dist": "DEBUG=tetris:* nodemon src/server/index.js",
     "test:unit": "mocha --require @babel/register --require ./test/client/helpers.js --require test/client/dom.js --require ignore-styles 'test/**/*.spec.js'",
-    "test:unit:watch": "npm run test:unit -- --watch"
+    "test:unit:watch": "npm run test:unit -- --watch",
+    "deploy": "gh-pages -d src/client/dist",
+    "publish": "npm run client-dist && npm run deploy"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
     "@material-ui/core": "^4.9.12",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.51",
+    "axios": "^0.19.2",
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "history": "latest",
@@ -63,6 +66,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
+    "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.5.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
@@ -80,6 +84,7 @@
     "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^3.7.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
   }
 }
