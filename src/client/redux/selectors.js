@@ -10,6 +10,9 @@ const selectScore = (state) => state.score;
 const selectLevel = (state) => state.level;
 const selectError = (state) => state.error;
 const selectGameStatus = (state) => state.gameStatus;
+const selectReady = (state) => state.ready;
+const selectUsers = (state) => state.users;
+const selectChecked = (state) => state.checked;
 
 export {
   selectSocket,
@@ -24,4 +27,7 @@ export {
   selectLevel,
   selectError,
   selectGameStatus,
+  selectReady,
+  selectChecked,
+  selectUsers,
 };

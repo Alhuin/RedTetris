@@ -1,23 +1,24 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 // Redux
 import {
-  checkRoomAvailable, initGrid, checkCollision, checkParams,
+  initGrid, checkCollision, checkParams,
 } from './helpers';
 import {
+  selectChecked,
   selectDropTime,
   selectGameStatus,
-  selectSocket,
+  selectSocket, selectUsers,
 } from '../../redux/selectors';
 import {
   setDropTime,
   setGameStatus,
   setError,
-  setUsername,
-  setRoomName,
+  joinRoomSocket,
+  checkRoomSocket,
 } from '../../redux/actions';
 
 // Custom Hooks
@@ -33,15 +34,13 @@ import Lobby from './Lobby';
 import StartButton from './StartButtton';
 import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
 
-
 const Tetris = ({ location, match, history }) => {
   const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
   const dropTime = useSelector(selectDropTime);
   const gameStatus = useSelector(selectGameStatus);
-
-  const [users, setUsers] = useState([{}]);
-  const [checked, setChecked] = useState(null);
+  const checked = useSelector(selectChecked);
+  const users = useSelector(selectUsers);
   const isMounted = useRef(true);
 
   const { roomName, username } = match.params;
@@ -54,36 +53,18 @@ const Tetris = ({ location, match, history }) => {
     ready = location.state.ready;
   }
 
-  useEffect(() => {
-    // console.log('1');
-    socket.on('userReady', (usersL) => {
-      setUsers(usersL);
-    });
-  }, []);
-
   // useEffect(() => {
   // todo leave room, change username
   // }, [roomName, username]);
 
   useEffect(() => {
-    // console.log('ismounted ?', isMounted);
     if (isMounted.current) {
       if (ready === undefined) {
-        console.log(roomName, username);
         if (checkParams(roomName, username, setError, dispatch)) {
-          setUsername(username, dispatch);
-          setRoomName(roomName, dispatch);
-          checkRoomAvailable(socket, roomName, username, setError, dispatch, () => {
-            socket.emit('checkRoomUser', roomName, username, (data) => {
-              setChecked(data.status);
-            });
-          });
+          dispatch(joinRoomSocket(socket, { roomName, username }));
         }
-      } else {
-        socket.emit('checkRoomUser', roomName, username, (data) => {
-          setChecked(data.status);
-        });
       }
+      dispatch(checkRoomSocket(socket, { roomName, username }));
     }
     return (() => {
       isMounted.current = false;
@@ -153,7 +134,7 @@ const Tetris = ({ location, match, history }) => {
   }
 
   return (
-    <StyledTetrisWrapper role="buttton" tabIndex="0" onKeyDown={move}>
+    <StyledTetrisWrapper role="button" tabIndex="0" onKeyDown={move}>
       { checked
       && (
         <StyledTetris>

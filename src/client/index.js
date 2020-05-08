@@ -11,7 +11,7 @@ import App from './App';
 
 const store = createStore(
   reducer,
-  // applyMiddleware(thunk, createLogger()),
+  applyMiddleware(thunk, createLogger()),
 );
 
 ReactDOM.render((

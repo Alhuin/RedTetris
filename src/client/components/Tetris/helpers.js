@@ -14,18 +14,6 @@ export const checkParams = (roomName, username, setError, dispatch) => {
   return true;
 };
 
-export const checkRoomAvailable = (socket, roomName, username, setError, dispatch, cb) => socket.emit('isRoomAvailable', roomName, (data) => {
-  if (data.status === true) {
-    socket.emit(data.needCreate ? 'createRoom' : 'joinRoom', roomName, username, () => {
-      cb();
-    });
-  } else {
-    setError(data.error, dispatch);
-    cb();
-  }
-});
-
-
 export const checkCollision = (player, grid, { x: moveX, y: moveY }) => {
   const { tetrimino } = player;
   const tetriHeight = tetrimino.length;

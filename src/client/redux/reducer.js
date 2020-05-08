@@ -1,8 +1,6 @@
 import socketio from 'socket.io-client';
 import {
-  SET_ROOM_NAME,
   SET_DROP_TIME,
-  SET_USERNAME,
   SET_PLAYER,
   SET_GRID,
   SET_LINES_CLEARED,
@@ -12,11 +10,15 @@ import {
   INCREMENT_LINES_CLEARED,
   SET_GAME_STATUS,
   SET_ERROR,
+  SET_READY,
+  SET_CHECKED,
+  INIT_USER,
+  RESET_PLAYER,
 } from './actions/types';
 import { TETRIMINOS } from '../components/Tetris/tetriminos';
 import { GRID_WIDTH, initGrid } from '../components/Tetris/helpers';
 
-const socket = socketio('https://daf8d1c1.ngrok.io');
+const socket = socketio('http://127.0.0.1:4001');
 const initialState = {
   socket,
   username: '',
@@ -39,31 +41,52 @@ const initialState = {
   lines: 0,
   score: 0,
   level: 0,
+  checked: null,
+  ready: false,
+  users: [],
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    /**
+     *    Authentication actions
+     */
+
+    case SET_CHECKED:
+      return {
+        ...state,
+        checked: action.payload,
+      };
+    case SET_READY:
+      return {
+        ...state,
+        ready: action.payload,
+      };
+    case INIT_USER: {
+      return {
+        ...state,
+        username: action.payload.username,
+        roomName: action.payload.roomName,
+        users: action.payload.users,
+        ready: true,
+      };
+    }
+    case SET_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+      /**
+       *    Game actions
+       */
+
     case SET_PLAYER: {
       if (action.player === state.username) {
         return { ...state, me: action.data };
       }
       return { ...state, opponent: action.data };
     }
-    case SET_USERNAME:
-      return {
-        ...state,
-        username: action.payload,
-      };
-    case SET_ROOM_NAME:
-      return {
-        ...state,
-        roomName: action.payload,
-      };
-    case SET_ERROR:
-      return {
-        ...state,
-        error: action.payload,
-      };
     case SET_GAME_STATUS:
       return {
         ...state,
@@ -108,7 +131,7 @@ const reducer = (state = initialState, action) => {
         linesCleared,
       };
     }
-    case 'RESET_PLAYER':
+    case RESET_PLAYER:
       return {
         ...initialState,
         socket,

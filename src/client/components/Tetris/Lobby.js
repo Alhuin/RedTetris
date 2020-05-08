@@ -7,7 +7,7 @@ const Lobby = ({ users }) => (
     Joueurs:
     <ul>
       {users.map((user) => (
-        <li key={user.id}>
+        <li key={user.name}>
           {user.name}
           {user.isAdmin ? ' (Admin)' : ''}
         </li>

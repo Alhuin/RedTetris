@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 // Redux
-import { setUsername, setRoomName, setError } from '../../redux/actions';
-import {
-  selectSocket, selectRoomName, selectUsername, selectError,
-} from '../../redux/selectors';
-
-import { checkParams, checkRoomAvailable } from './helpers';
+import { joinRoomSocket, setReady, setError } from '../../redux/actions';
+import { selectSocket, selectError } from '../../redux/selectors';
+import { JOIN_ROOM_ERROR, JOIN_ROOM_SUCCESS, SET_ERROR } from '../../redux/actions/types';
 
 // Components
 import CustomAlert from './Alert';
@@ -16,15 +13,32 @@ import JoinButton from './JoinButton';
 import { StyledLogin, StyledLoginWrapper } from '../styles/StyledLogin';
 import { StyledLogo } from '../styles/StyledLogo';
 
-const Login = ({ ready, setReady }) => {
+const Login = ({ ready }) => {
   const socket = useSelector(selectSocket);
-  const roomName = useSelector(selectRoomName);
-  const username = useSelector(selectUsername);
   const error = useSelector(selectError);
 
   const [roomNameInput, setRoomNameInput] = useState('');
   const [usernameInput, setUsernameInput] = useState('');
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on(JOIN_ROOM_SUCCESS, (data) => {
+      // redux not yet updated so we get data from the callback
+      console.log('join room success users = ', data.users);
+      dispatch({
+        type: 'INIT_USER',
+        payload: {
+          username: data.username,
+          roomName: data.roomName,
+          users: data.users,
+        },
+      });
+    });
+
+    socket.on(JOIN_ROOM_ERROR, (errorMsg) => {
+      dispatch({ type: SET_ERROR, payload: { error: errorMsg } });
+    });
+  }, []);
 
   return (
     <StyledLoginWrapper>
@@ -52,23 +66,19 @@ const Login = ({ ready, setReady }) => {
         />
       </StyledLogin>
       <JoinButton
-        cb={() => {
-          if (checkParams(roomNameInput, usernameInput, setError, dispatch)) {
-            setUsername(usernameInput, dispatch);
-            setRoomName(roomNameInput, dispatch);
-            checkRoomAvailable(socket, roomNameInput, usernameInput, setError, setReady, dispatch);
-          }
-        }}
+        cb={() => dispatch(joinRoomSocket(
+          socket,
+          { roomName: roomNameInput, username: usernameInput },
+        ))}
       />
       { error !== ''
-       && <CustomAlert severity="warning" message={error} close={() => setError('', dispatch)} />}
+       && <CustomAlert severity="warning" message={error} close={() => dispatch(setError(''))} />}
     </StyledLoginWrapper>
   );
 };
 
 Login.propTypes = {
   ready: PropTypes.bool,
-  setReady: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {

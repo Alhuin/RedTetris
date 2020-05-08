@@ -3,26 +3,25 @@ import User from './models/User.js';
 import Room from './models/Room.js';
 import { events } from './constants/index.js';
 
-const logerror = debug('tetris:error');
+// const logerror = debug('tetris:error');
 const loginfo = debug('tetris:info');
 const rooms = {};
-
 
 const createUsersList = (room) => {
   const { users } = room;
   const usersList = [];
 
-  loginfo('%O', users);
-  loginfo('%O', rooms);
   for (const client in users) {
     const user = users[client];
     loginfo('%O', user);
     usersList.push({ name: user.name, id: user.id, isAdmin: user.isAdmin });
   }
+  console.log('users');
+  console.log(usersList);
   return usersList;
 };
 
-const joinRoom = (socket, room, user, cb) => {
+const joinRoom = (io, socket, room, user) => {
   loginfo('joinRoom(socket:%o, room:%o)', user.name, room.name);
 
   // Join socket.io room
@@ -41,7 +40,11 @@ const joinRoom = (socket, room, user, cb) => {
       loginfo('user %o is admin', user.name);
       user.isAdmin = true;
     }
-    cb();
+    io.in(room.name).emit(events.JOIN_ROOM_SUCCESS, {
+      roomName: room.name,
+      username: user.name,
+      users: createUsersList(room),
+    });
   });
   return true;
 };
@@ -71,39 +74,24 @@ export default function handleSocket(socket, io) {
 
   const user = User.init(socket);
 
-  socket.on(events.CREATE_ROOM, (roomName, username, cb) => {
-    loginfo('Recieved createRoom from %o', username);
-    user.name = username;
-    const room = Room.init(roomName);
-    rooms[room.name] = room;
-    user.room = room.name;
-    joinRoom(socket, room, user, cb);
-  });
-
-  socket.on(events.JOIN_ROOM, (roomName, username, cb) => {
+  socket.on(events.JOIN_ROOM, ({ roomName, username }) => {
     loginfo('Recieved joinRoom %o from %o', roomName, username);
-    const room = rooms[roomName];
 
-    if (room !== null) {
-      user.name = username;
-      joinRoom(socket, room, user, cb);
-    } else {
-      logerror('did not find room with name: %o', roomName);
-      cb();
+    let room = rooms[roomName];
+    user.name = username;
+
+    if (room === undefined) { // create room
+      console.log('socket create room');
+      room = Room.init(roomName);
+      user.room = room.name;
+      rooms[room.name] = room;
     }
-  });
-
-  socket.on(events.IS_ROOM_AVAILABLE, (roomName, cb) => {
-    const room = rooms[roomName];
-
-    if (room === undefined) {
-      cb({ status: true, needCreate: true });
-    } else if (room.launched) {
-      cb({ status: false, error: 'An epic battle is already happening here !' });
-    } else if (room.users.length === 2) {
-      cb({ status: false, error: 'This room is already full...' });
+    if (room.launched) {
+      socket.emit(events.JOIN_ROOM_ERROR, 'An epic battle is already happening here !');
+    } else if (room.users.length >= 2) {
+      socket.emit(events.JOIN_ROOM_ERROR, 'This room is full !');
     } else {
-      cb({ status: true, needCreate: false });
+      joinRoom(io, socket, room, user);
     }
   });
 
@@ -123,10 +111,6 @@ export default function handleSocket(socket, io) {
       if (!status) {
         data = 'user not in room';
       }
-    }
-    if (status) {
-      loginfo('user %o is ready', user.name);
-      io.in(room.name).emit('userReady', createUsersList(room));
     }
     cb({ status, data });
   });
