@@ -13,7 +13,7 @@ const app = express();
 app.use(routes);
 
 console.log(process.env.NODE_ENV);
-const server = (process.env.NODE_ENV !== undefined)
+const server = (process.env.NODE_ENV === undefined)
   ? https.createServer(
     {
       key: fs.readFileSync('/Users/julien/ssl/localhost.key'),
@@ -23,7 +23,7 @@ const server = (process.env.NODE_ENV !== undefined)
   ) : new Server(app);
 
 const io = socketio(server);
-io.origins('*:*');
+// io.origins('*:*');
 io.on('connection', (socket) => handleSocket(socket, io));
 
 server.listen(port, () => debug(`Listening on port ${port}`));
