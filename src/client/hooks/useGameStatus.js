@@ -14,8 +14,8 @@ export const useGameStatus = (linesCleared) => {
 
   const calcScore = useCallback(() => {
     if (linesCleared > 0) {
-      setScore(score + points[linesCleared - 1] * (level + 1), dispatch);
-      setLines(lines + linesCleared, dispatch);
+      dispatch(setScore(score + points[linesCleared - 1] * (level + 1)));
+      dispatch(setLines(lines + linesCleared));
     }
   }, [level, points, linesCleared]);
 

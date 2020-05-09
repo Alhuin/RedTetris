@@ -8,7 +8,7 @@ export const initGrid = () => Array.from(
 
 export const checkParams = (roomName, username, setError, dispatch) => {
   if (roomName === '' || username === '') {
-    setError('Fields can\'t be blank', dispatch);
+    dispatch(setError('Fields can\'t be blank'));
     return false;
   }
   return true;

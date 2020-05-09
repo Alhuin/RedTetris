@@ -86,23 +86,23 @@ const Tetris = ({ location, match, history }) => {
 
   const startGame = () => {
     // reset grid, player, gameStatus & dropTime
-    setGameStatus(1, dispatch);
+    dispatch(setGameStatus(1));
     resetPlayer();
-    setDropTime(800, dispatch);
+    dispatch(setDropTime(800));
     dispatch(setGrid(initGrid()));
   };
 
   const drop = () => {
     if (lines >= (level + 1) * 10) {
-      setLevel(level + 1, dispatch);
-      setDropTime(dropTime * 0.5, dispatch);
+      dispatch(setLevel(level + 1));
+      dispatch(setDropTime(dropTime * 0.5));
     }
     if (!checkCollision(player, grid, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
     } else {
       if (player.pos.y < 1) {
-        setGameStatus(3, dispatch);
-        setDropTime(null, dispatch);
+        dispatch(setGameStatus(3));
+        dispatch(setDropTime(null));
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }

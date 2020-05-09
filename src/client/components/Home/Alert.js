@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
-import { StyledAlertWrapper } from '../styles/StyledAlert';
+import StyledAlertWrapper from '../styles/StyledAlert';
 
 const CustomAlert = ({ severity, message, close }) => {
   const [open, setOpen] = useState(true);

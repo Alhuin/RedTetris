@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledLobby = styled.div`
+const StyledLobby = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -15,3 +15,5 @@ export const StyledLobby = styled.div`
   font-family: Pixel;
   font-size: 0.8rem
 `;
+
+export default StyledLobby;

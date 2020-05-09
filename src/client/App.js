@@ -9,7 +9,16 @@ function App() {
   return (
     <HashRouter basename="/" hashType="noslash">
       <Switch>
-        <Route path="/:roomName[:username]" component={(props) => <Tetris {...props} />} />
+        <Route
+          path="/:roomName[:username]"
+          component={(props) => (
+            <Tetris
+              location={props.location}
+              history={props.history}
+              match={props.match}
+            />
+          )}
+        />
         <Route exact path="/" component={() => <Home />} />
         <Redirect to="/" />
       </Switch>

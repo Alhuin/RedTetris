@@ -32,6 +32,7 @@ const socketMiddleware = (store) => (next) => (action) => {
       socket.emit(CHECK_ROOM_USER, action.data.roomName, action.data.username, (res) => {
         if (!res.status) {
           action.history.push('/');
+          // prevents setstate in Tetris render
         }
         dispatch({ type: SET_CHECKED, payload: res.status });
         dispatch({ type: SET_READY, payload: res.status });

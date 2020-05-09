@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyledLobby } from '../styles/StyledLobby';
+import StyledLobby from '../styles/StyledLobby';
 
 const Lobby = ({ users }) => (
   <StyledLobby>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledAlertWrapper = styled.div`
+const StyledAlertWrapper = styled.div`
    width: 100vw;
    position: absolute;
    top: 0;
@@ -10,3 +10,5 @@ export const StyledAlertWrapper = styled.div`
      font-size: inherit;
    }
 `;
+
+export default StyledAlertWrapper;

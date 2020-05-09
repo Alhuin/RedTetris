@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledGrid = styled.div`
+const StyledGrid = styled.div`
   width: 100%;
   display: grid;
   grid-template-rows: repeat(${(props) => props.height},calc(25vw / ${(props) => props.width}));
@@ -10,3 +10,4 @@ export const StyledGrid = styled.div`
   max-width: 25vw;
   background: #111;
 `;
+export default StyledGrid;

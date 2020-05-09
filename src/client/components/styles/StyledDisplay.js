@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledDisplay = styled.div`
+const StyledDisplay = styled.div`
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -15,3 +15,5 @@ export const StyledDisplay = styled.div`
   font-family: Pixel;
   font-size: 0.8rem
 `;
+
+export default StyledDisplay;

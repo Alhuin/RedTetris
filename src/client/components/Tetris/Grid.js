@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Cell from './Cell';
-import { StyledGrid } from '../styles/StyledGrid';
+import StyledGrid from '../styles/StyledGrid';
 
 const Grid = ({ grid }) => (
   <StyledGrid width={grid[0].length} height={grid.length}>

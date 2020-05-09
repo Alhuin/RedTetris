@@ -12,9 +12,6 @@ function Home() {
   const username = useSelector(selectUsername);
   const ready = useSelector(selectReady);
 
-  // if (ready) {
-  //   console.log('isReady, path= ', `${roomName}[${username}]`);
-  // }
   return (ready
     ? <Redirect to={{ pathname: `${roomName}[${username}]`, state: { ready } }} />
     : (

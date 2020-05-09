@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledJoinButton = styled.button`
+const StyledJoinButton = styled.button`
   min-width: 150px;
   box-sizing: border-box;
   margin: 0 0 50px 0;
@@ -16,3 +16,5 @@ export const StyledJoinButton = styled.button`
   outline: none;
   cursor: pointer;
 `;
+
+export default StyledJoinButton;

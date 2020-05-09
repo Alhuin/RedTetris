@@ -7,19 +7,13 @@ import { events } from './constants/index.js';
 const loginfo = debug('tetris:info');
 const rooms = {};
 
-const createUsersList = (room) => {
-  const { users } = room;
-  const usersList = [];
-
-  for (const client in users) {
-    const user = users[client];
-    loginfo('%O', user);
-    usersList.push({ name: user.name, id: user.id, isAdmin: user.isAdmin });
-  }
-  console.log('users');
-  console.log(usersList);
-  return usersList;
-};
+const createUsersList = (room) => room.users.map(
+  (user) => ({
+    name: user.name,
+    id: user.id,
+    isAdmin: user.isAdmin,
+  }),
+);
 
 const joinRoom = (io, socket, room, user) => {
   loginfo('joinRoom(socket:%o, room:%o)', user.name, room.name);

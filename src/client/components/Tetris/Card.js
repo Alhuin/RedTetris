@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyledDisplay } from '../styles/StyledDisplay';
+import StyledDisplay from '../styles/StyledDisplay';
 
 const Card = ({ gameOver, text }) => (
   <StyledDisplay gameOver={gameOver}>

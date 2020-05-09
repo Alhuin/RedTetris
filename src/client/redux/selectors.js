@@ -1,4 +1,3 @@
-const selectSocket = (state) => state.socket;
 const selectUsername = (state) => state.username;
 const selectRoomName = (state) => state.roomName;
 const selectPlayer = (state) => state.me;
@@ -15,7 +14,6 @@ const selectUsers = (state) => state.users;
 const selectChecked = (state) => state.checked;
 
 export {
-  selectSocket,
   selectUsername,
   selectRoomName,
   selectPlayer,

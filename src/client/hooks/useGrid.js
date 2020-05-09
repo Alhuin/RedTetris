@@ -13,12 +13,12 @@ export const useGrid = (player, resetPlayer) => {
 
   // builds a fresh grid from the stored one (with merged tetriminos) and draws the current piece
   useEffect(() => {
-    setLinesCleared(0, dispatch);
+    dispatch(setLinesCleared(0));
 
     const removeClearedLines = (newGrid) => newGrid
       .reduce((ack, line) => {
         if (line.findIndex((cell) => cell[0] === 0) === -1) { // if we find a line with no 0 (full)
-          incrementLinesCleared(dispatch); // increment linesCleared number
+          dispatch(incrementLinesCleared()); // increment linesCleared number
           // add a new empty line a the top of the grid
           ack.unshift(new Array(newGrid[0].length).fill([0, 'clear']));
           return ack;

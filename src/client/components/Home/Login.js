@@ -10,7 +10,7 @@ import { selectError } from '../../redux/selectors';
 import CustomAlert from './Alert';
 import JoinButton from './JoinButton';
 import { StyledLogin, StyledLoginWrapper } from '../styles/StyledLogin';
-import { StyledLogo } from '../styles/StyledLogo';
+import StyledLogo from '../styles/StyledLogo';
 
 const Login = ({ ready }) => {
   const error = useSelector(selectError);
@@ -29,7 +29,7 @@ const Login = ({ ready }) => {
           onChange={(e) => {
             setUsernameInput(e.target.value);
             if (ready) {
-              setReady(false);
+              dispatch(setReady(false));
             }
           }}
         />
@@ -39,7 +39,7 @@ const Login = ({ ready }) => {
           onChange={(e) => {
             setRoomNameInput(e.target.value);
             if (ready) {
-              setReady(false);
+              dispatch(setReady(false));
             }
           }}
         />
