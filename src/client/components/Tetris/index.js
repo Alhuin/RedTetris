@@ -11,7 +11,7 @@ import {
   selectChecked,
   selectDropTime,
   selectGameStatus,
-  selectSocket, selectUsers,
+  selectUsers,
 } from '../../redux/selectors';
 import {
   setDropTime,
@@ -36,7 +36,6 @@ import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
 
 const Tetris = ({ location, match, history }) => {
   const dispatch = useDispatch();
-  const socket = useSelector(selectSocket);
   const dropTime = useSelector(selectDropTime);
   const gameStatus = useSelector(selectGameStatus);
   const checked = useSelector(selectChecked);
@@ -60,11 +59,19 @@ const Tetris = ({ location, match, history }) => {
   useEffect(() => {
     if (isMounted.current) {
       if (ready === undefined) {
+        // if connected from url, check parameters & joinRoom
         if (checkParams(roomName, username, setError, dispatch)) {
-          dispatch(joinRoomSocket(socket, { roomName, username }));
+          dispatch(joinRoomSocket({
+            roomName,
+            username,
+          }));
         }
       }
-      dispatch(checkRoomSocket(socket, { roomName, username }));
+      // check if user is allowed to access this room
+      dispatch(checkRoomSocket(history, {
+        roomName,
+        username,
+      }));
     }
     return (() => {
       isMounted.current = false;
@@ -127,10 +134,8 @@ const Tetris = ({ location, match, history }) => {
   }, dropTime);
 
   if (checked === null) {
+    // waiting for redux, room not yet checked
     return <></>;
-  }
-  if (checked === false) {
-    history.push('/');
   }
 
   return (

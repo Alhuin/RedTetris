@@ -18,3 +18,4 @@ export const RESET_PLAYER = 'RESET_PLAYER';
 export const JOIN_ROOM_SUCCESS = 'joinRoomSuccess';
 export const JOIN_ROOM_ERROR = 'joinRoomError';
 export const JOIN_ROOM = 'joinRoom';
+export const CHECK_ROOM_USER = 'checkRoomUser';

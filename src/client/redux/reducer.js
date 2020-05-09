@@ -18,7 +18,7 @@ import {
 import { TETRIMINOS } from '../components/Tetris/tetriminos';
 import { GRID_WIDTH, initGrid } from '../components/Tetris/helpers';
 
-const socket = socketio('https://5ddfed8c.ngrok.io');
+const socket = socketio('http://127.0.0.1:4001');
 const initialState = {
   socket,
   username: '',

@@ -8,10 +8,11 @@ import { Provider } from 'react-redux';
 import reducer from './redux/reducer';
 import './index.css';
 import App from './App';
+import socketMiddleware from './middlewares/socketMiddleware';
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunk, createLogger()),
+  applyMiddleware(thunk, createLogger(), socketMiddleware),
 );
 
 ReactDOM.render((

@@ -10,24 +10,23 @@ import {
   SET_CHECKED,
   SET_READY,
   JOIN_ROOM,
+  CHECK_ROOM_USER,
 } from './types';
 
 export const setError = (payload) => ({ type: SET_ERROR, payload });
 
-export const joinRoomSocket = (socket, data) => (dispatch) => {
+export const joinRoomSocket = (data) => (dispatch) => {
   if (data.username === '' || data.roomName === '') {
     dispatch(setError('Fields can\'t be blank !'));
   } else {
-    socket.emit(JOIN_ROOM, data);
-    // cb catched by JOIN_ROOM_SUCCESS / JOIN_ROOM_ERROR in Login.js
+    dispatch({ type: JOIN_ROOM, data });
+    // socket.emit(JOIN_ROOM, data);
+    // cb catched by JOIN_ROOM_SUCCESS / JOIN_ROOM_ERROR in Login.js & Tetris.js
   }
 };
 
-export const checkRoomSocket = (socket, data) => (dispatch) => {
-  socket.emit('checkRoomUser', data.roomName, data.username, (res) => {
-    dispatch({ type: SET_CHECKED, payload: res.status });
-    dispatch({ type: SET_READY, payload: res.status });
-  });
+export const checkRoomSocket = (history, data) => (dispatch) => {
+  dispatch({ type: CHECK_ROOM_USER, history, data });
 };
 
 export function setGameStatus(payload, dispatch) {
