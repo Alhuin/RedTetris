@@ -56,6 +56,10 @@ const Tetris = ({ location, match, history }) => {
   // todo leave room, change username
   // }, [roomName, username]);
 
+  // useEffect hook is called each time one of its deps is modified
+  // here the array is empty, it will run once on ComponentDidMount
+  // its returned function is called when the components unmounts
+  // isMounted ref checks that no re-renders happen while the component is not mounted
   useEffect(() => {
     if (isMounted.current) {
       if (ready === undefined) {
@@ -129,6 +133,7 @@ const Tetris = ({ location, match, history }) => {
     }
   };
 
+  // move down each dropTime
   useInterval(() => {
     drop();
   }, dropTime);

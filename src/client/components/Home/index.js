@@ -12,6 +12,7 @@ function Home() {
   const username = useSelector(selectUsername);
   const ready = useSelector(selectReady);
 
+  // if user is ready (true on JOIN_ROOM_SUCCESS) go to Tetris component, else go to Login
   return (ready
     ? <Redirect to={{ pathname: `${roomName}[${username}]`, state: { ready } }} />
     : (

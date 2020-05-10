@@ -10,8 +10,10 @@ import handleSocket from './socketio.js';
 
 const port = process.env.PORT || 4001;
 const app = express();
+
 app.use(routes);
 
+// Create https server if node_env is production, else http
 const server = (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'production')
   ? https.createServer(
     {

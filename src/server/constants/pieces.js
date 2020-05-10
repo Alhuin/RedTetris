@@ -1,151 +1,74 @@
-const tetI = [
-  {
-    height: 1,
-    width: 4,
-    pattern: [{ mask: 15, length: 4 }],
+export const TETRIMINOS = {
+  0: { // empty tetrimino, the first displayed on the grid at Tetris landing
+    shape: [[0]],
+    color: '0,0,0',
   },
-  {
-    height: 4,
-    width: 1,
-    pattern: [
-      { mask: 1, length: 1 },
-      { mask: 1, length: 1 },
-      { mask: 1, length: 1 },
-      { mask: 1, length: 1 },
+  I: {
+    shape: [
+      [0, 'I', 0, 0],
+      [0, 'I', 0, 0],
+      [0, 'I', 0, 0],
+      [0, 'I', 0, 0],
     ],
+    color: '80, 227, 230',
   },
-];
+  J: {
+    shape: [
+      [0, 'J', 0, 0],
+      [0, 'J', 0, 0],
+      [0, 'J', 0, 0],
+      ['J', 'J', 0, 0],
+    ],
+    color: '36, 95, 223',
+  },
+  O: {
+    shape: [
+      ['O', 'O'],
+      ['O', 'O'],
+    ],
+    color: '223, 217, 36',
+  },
+  S: {
+    shape: [
+      [0, 'S', 'S'],
+      ['S', 'S', 0],
+      [0, 0, 0],
+    ],
+    color: '48, 211, 56',
+  },
+  T: {
+    shape: [
+      ['T', 'T', 'T'],
+      [0, 'T', 0],
+      [0, 0, 0],
 
-const tetO = [
-  [
-    1, 1,
-    1, 1,
-  ],
-];
+    ],
+    color: '132, 61, 198',
+  },
+  L: {
+    shape: [
+      [0, 'L', 0, 0],
+      [0, 'L', 0, 0],
+      [0, 'L', 0, 0],
+      [0, 'L', 'L', 0],
+    ],
+    color: '223, 173, 36',
+  },
+  Z: {
+    shape: [
+      ['Z', 'Z', 0],
+      [0, 'Z', 'Z'],
+      [0, 0, 0],
+    ],
+    color: '227, 78, 78',
+  },
+};
 
-const tetT = [
-  [
-    0, 1, 0,
-    1, 1, 1,
-    0, 0, 0,
-  ],
-  [
-    0, 1, 0,
-    0, 1, 1,
-    0, 1, 0,
-  ],
-  [
-    0, 0, 0,
-    1, 1, 1,
-    0, 1, 0,
-  ],
-  [
-    0, 1, 0,
-    1, 1, 0,
-    0, 1, 0,
-  ],
-];
+export const randomTetrimino = () => {
+  const tetriminos = 'IJLOSTZ';
+  // get random letter from the string
+  const random = tetriminos[Math.floor(Math.random() * tetriminos.length)];
 
-const tetJ = [
-  [
-    1, 0, 0,
-    1, 1, 1,
-    0, 0, 0,
-  ],
-  [
-    0, 1, 1,
-    0, 1, 0,
-    0, 1, 0,
-  ],
-  [
-    0, 0, 0,
-    1, 1, 1,
-    0, 0, 1,
-  ],
-  [
-    0, 1, 0,
-    0, 1, 0,
-    1, 1, 0,
-  ],
-];
-
-const tetL = [
-  [
-    0, 0, 1,
-    1, 1, 1,
-    0, 0, 0,
-  ],
-  [
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 1,
-  ],
-  [
-    0, 0, 0,
-    1, 1, 1,
-    1, 0, 0,
-  ],
-  [
-    1, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-  ],
-];
-
-const tetZ = [
-  [
-    1, 1, 0,
-    0, 1, 1,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 1,
-    0, 1, 1,
-    0, 1, 0,
-  ],
-  [
-    0, 0, 0,
-    1, 1, 0,
-    0, 1, 1,
-  ],
-  [
-    0, 1, 0,
-    1, 1, 0,
-    1, 0, 0,
-  ],
-];
-
-const tetS = [
-  [
-    0, 1, 1,
-    1, 1, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 1, 0,
-    0, 1, 1,
-    0, 0, 1,
-  ],
-  [
-    0, 0, 0,
-    0, 1, 1,
-    1, 1, 0,
-  ],
-  [
-    1, 0, 0,
-    1, 1, 0,
-    0, 1, 0,
-  ],
-];
-
-const pieces = [
-  tetI,
-  tetO,
-  tetT,
-  tetL,
-  tetJ,
-  tetZ,
-  tetS,
-];
-
-export default pieces;
+  // return the corresponding tetrimino
+  return TETRIMINOS[random];
+};

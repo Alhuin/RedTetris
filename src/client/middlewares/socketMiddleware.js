@@ -2,6 +2,9 @@ import {
   JOIN_ROOM, SET_CHECKED, SET_READY, CHECK_ROOM_USER, JOIN_ROOM_SUCCESS, JOIN_ROOM_ERROR, SET_ERROR,
 } from '../redux/actions/types';
 
+// The socket middleware handles redux and socketIo dispatching
+// If one of those actions are catched, they are handled here
+// Otherwise they are passed as standard actions to redux (like setters, see redux/actions/index.js)
 const socketMiddleware = (store) => (next) => (action) => {
   const { dispatch, getState } = store;
   const state = getState();

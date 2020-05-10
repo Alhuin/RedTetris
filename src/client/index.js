@@ -10,11 +10,16 @@ import './index.css';
 import App from './App';
 import socketMiddleware from './middlewares/socketMiddleware';
 
+// Initialize redux store and apply those middlewares:
+// - redux-thunk (to get dispatch inside action creators, see redux/actions/index.js)
+// - redux-logger
+// - custom socketMiddleWare
 const store = createStore(
   reducer,
   applyMiddleware(thunk, createLogger(), socketMiddleware),
 );
 
+// Render app inside redux context
 ReactDOM.render((
   <Provider store={store}>
     <App />

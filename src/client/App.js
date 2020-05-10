@@ -5,17 +5,18 @@ import {
 import Home from './components/Home';
 import Tetris from './components/Tetris';
 
+// Main React Component handling react-router
 function App() {
   return (
     <HashRouter basename="/" hashType="noslash">
       <Switch>
         <Route
           path="/:roomName[:username]"
-          component={(props) => (
+          component={({ location, history, match }) => (
             <Tetris
-              location={props.location}
-              history={props.history}
-              match={props.match}
+              location={location}
+              history={history}
+              match={match}
             />
           )}
         />
