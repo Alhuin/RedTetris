@@ -9,10 +9,10 @@
   },
   "scripts": {
     "eslint": "eslint src",
-    "client-dist": "webpack -p --config ./webpack.prod.cjs",
+    "client-dist": "webpack --config ./webpack.prod.cjs",
     "client-dev": "webpack-dev-server --open --config ./webpack.dev.cjs --progess",
     "srv-dev": "DEBUG=tetris:* nodemon src/server/index.js",
-    "srv-dist": "DEBUG=tetris:* nodemon src/server/index.js",
+    "srv-dist": "DEBUG=tetris:* NODE_ENV=production node src/server/index.js",
     "test:unit": "mocha --require @babel/register --require ./test/client/helpers.js --require test/client/dom.js --require ignore-styles 'test/**/*.spec.js'",
     "test:unit:watch": "npm run test:unit -- --watch",
     "deploy": "gh-pages -d src/client/dist",
