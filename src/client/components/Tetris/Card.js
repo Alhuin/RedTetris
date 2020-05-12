@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import StyledDisplay from '../styles/StyledDisplay';
+import StyledCard from '../styles/StyledCard';
 
 const Card = ({ gameOver, text }) => (
-  <StyledDisplay gameOver={gameOver}>
+  <StyledCard gameOver={gameOver}>
     {text}
-  </StyledDisplay>
+  </StyledCard>
 );
 
 Card.propTypes = {

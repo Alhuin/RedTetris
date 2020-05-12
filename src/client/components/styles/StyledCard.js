@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledDisplay = styled.div`
+const StyledCard = styled.div`
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -16,4 +16,4 @@ const StyledDisplay = styled.div`
   font-size: 0.8rem
 `;
 
-export default StyledDisplay;
+export default StyledCard;
