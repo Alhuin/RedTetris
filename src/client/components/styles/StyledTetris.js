@@ -5,7 +5,9 @@ export const StyledTetrisWrapper = styled.div`
   height: 100vh;
   overflow: hidden;
   display: flex;
+}
 `;
+// color: ${(props) => (props.darkmode ? 'black' : 'white')};
 
 export const StyledTetris = styled.div`
   display: flex;

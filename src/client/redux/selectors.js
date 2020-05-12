@@ -8,6 +8,7 @@ const selectLines = (state) => state.lines;
 const selectScore = (state) => state.score;
 const selectLevel = (state) => state.level;
 const selectError = (state) => state.error;
+const selectDarkmode = (state) => state.darkmode;
 const selectGameStatus = (state) => state.gameStatus;
 const selectReady = (state) => state.ready;
 const selectUsers = (state) => state.users;
@@ -24,6 +25,7 @@ export {
   selectScore,
   selectLevel,
   selectError,
+  selectDarkmode,
   selectGameStatus,
   selectReady,
   selectChecked,

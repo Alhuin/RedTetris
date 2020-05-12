@@ -1,6 +1,7 @@
 import {
   SET_DROP_TIME,
   SET_ERROR,
+  SET_DARKMODE,
   SET_GAME_STATUS,
   SET_LINES_CLEARED,
   SET_LINES,
@@ -17,6 +18,7 @@ import {
  */
 
 export const setError = (payload) => ({ type: SET_ERROR, payload });
+export const setDarkmode = () => ({ type: SET_DARKMODE });
 export const setGameStatus = (payload) => ({ type: SET_GAME_STATUS, payload });
 export const setDropTime = (payload) => ({ type: SET_DROP_TIME, payload });
 export const setReady = (payload) => ({ type: SET_READY, payload });
