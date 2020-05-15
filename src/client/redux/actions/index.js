@@ -10,6 +10,7 @@ import {
   INCREMENT_LINES_CLEARED,
   JOIN_ROOM,
   CHECK_ROOM_USER,
+  SEND_SHADOW,
 } from './types';
 
 /**
@@ -43,4 +44,8 @@ export const joinRoomSocket = (data) => (dispatch) => {
 
 export const checkRoomSocket = (history, data) => (dispatch) => {
   dispatch({ type: CHECK_ROOM_USER, history, data });
+};
+
+export const sendShadowSocket = (data) => (dispatch) => {
+  dispatch({ type: SEND_SHADOW, data });
 };

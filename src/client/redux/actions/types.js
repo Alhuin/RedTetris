@@ -13,9 +13,11 @@ export const SET_READY = 'SET_READY';
 export const INCREMENT_LINES_CLEARED = 'INCREMENT_LINES_CLEARED';
 export const INIT_USER = 'INIT_USER';
 export const RESET_PLAYER = 'RESET_PLAYER';
+export const SET_SHADOW = 'SET_SHADOW';
 
 // FROM SOCKETS
 export const JOIN_ROOM_SUCCESS = 'joinRoomSuccess';
 export const JOIN_ROOM_ERROR = 'joinRoomError';
 export const JOIN_ROOM = 'joinRoom';
 export const CHECK_ROOM_USER = 'checkRoomUser';
+export const SEND_SHADOW = 'sendShadow';

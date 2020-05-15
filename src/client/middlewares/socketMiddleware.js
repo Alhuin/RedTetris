@@ -1,5 +1,13 @@
 import {
-  JOIN_ROOM, SET_CHECKED, SET_READY, CHECK_ROOM_USER, JOIN_ROOM_SUCCESS, JOIN_ROOM_ERROR, SET_ERROR,
+  JOIN_ROOM,
+  SET_CHECKED,
+  SET_READY,
+  CHECK_ROOM_USER,
+  JOIN_ROOM_SUCCESS,
+  JOIN_ROOM_ERROR,
+  SET_ERROR,
+  SEND_SHADOW,
+  SET_SHADOW,
 } from '../redux/actions/types';
 
 // The socket middleware handles redux and socketIo dispatching
@@ -13,14 +21,20 @@ const socketMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
     case JOIN_ROOM:
       console.log('middleware JOIN_ROOM');
-      socket.emit(JOIN_ROOM, action.data);
-
-      socket.on(JOIN_ROOM_SUCCESS, (data) => {
+      socket.emit(JOIN_ROOM, action.data, () => {
         dispatch({ // Init username & roomName and return room usersList
           type: 'INIT_USER',
           payload: {
-            username: data.username,
-            roomName: data.roomName,
+            username: action.data.username,
+            roomName: action.data.roomName,
+          },
+        });
+      });
+
+      socket.on(JOIN_ROOM_SUCCESS, (data) => {
+        dispatch({ // Init username & roomName and return room usersList
+          type: 'SET_USERS',
+          payload: {
             users: data.users,
           },
         });
@@ -40,6 +54,16 @@ const socketMiddleware = (store) => (next) => (action) => {
         dispatch({ type: SET_CHECKED, payload: res.status });
         dispatch({ type: SET_READY, payload: res.status });
       });
+      break;
+    case SEND_SHADOW:
+      console.log('middleware sendShadow');
+      socket.emit(SEND_SHADOW, state.roomName, state.username, action.data);
+      break;
+    case 'UPDATE_SHADOW':
+      dispatch({ type: SET_SHADOW, payload: action.data.shadow });
+      break;
+    case 'START_GAME':
+      socket.emit('startGame');
       break;
     default:
       console.log('the next action:', action);

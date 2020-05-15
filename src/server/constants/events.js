@@ -5,6 +5,7 @@ const START_GAME = 'startGame';
 const DISCONNECT = 'disconnect';
 const IS_ROOM_AVAILABLE = 'isRoomAvailable';
 const CHECK_ROOM_USER = 'checkRoomUser';
+const SEND_SHADOW = 'sendShadow';
 
 export default {
   JOIN_ROOM,
@@ -14,4 +15,5 @@ export default {
   DISCONNECT,
   IS_ROOM_AVAILABLE,
   CHECK_ROOM_USER,
+  SEND_SHADOW,
 };

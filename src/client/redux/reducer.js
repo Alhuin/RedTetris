@@ -13,12 +13,15 @@ import {
   SET_READY,
   SET_CHECKED,
   INIT_USER,
-  RESET_PLAYER,
+  RESET_PLAYER, SET_SHADOW,
 } from './actions/types';
+import { serverUrl } from '../config';
 import { TETRIMINOS } from '../components/Tetris/tetriminos';
 import { GRID_WIDTH, initGrid } from '../components/Tetris/helpers';
 
-const socket = socketio('http://127.0.0.1:4001');
+console.log(serverUrl);
+const socket = socketio(serverUrl);
+
 const initialState = {
   socket,
   username: '',
@@ -30,10 +33,7 @@ const initialState = {
     tetrimino: TETRIMINOS[0].shape,
     collided: false,
   },
-  opponent: {
-    pos: { x: GRID_WIDTH / 2 - 2, y: 0 },
-    tetrimino: TETRIMINOS[0].shape,
-  },
+  shadow: [],
   room: null,
   dropTime: null,
   grid: initGrid(),
@@ -67,10 +67,14 @@ const reducer = (state = initialState, action) => {
         ...state,
         username: action.payload.username,
         roomName: action.payload.roomName,
-        users: action.payload.users,
         ready: true,
       };
     }
+    case 'SET_USERS':
+      return {
+        ...state,
+        users: action.payload.users,
+      };
     case SET_ERROR:
       return {
         ...state,
@@ -87,6 +91,11 @@ const reducer = (state = initialState, action) => {
       }
       return { ...state, opponent: action.data };
     }
+    case SET_SHADOW:
+      return {
+        ...state,
+        shadow: action.payload,
+      };
     case SET_GAME_STATUS:
       return {
         ...state,

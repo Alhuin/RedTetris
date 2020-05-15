@@ -1,12 +1,10 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 // Redux
-import {
-  initGrid, checkCollision, checkParams,
-} from './helpers';
+import { checkCollision, checkParams } from './helpers';
 import {
   selectChecked,
   selectDropTime,
@@ -33,6 +31,7 @@ import Card from './Card';
 import Lobby from './Lobby';
 import StartButton from './StartButtton';
 import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
+import Loader from '../Loader';
 
 const Tetris = ({ location, match, history }) => {
   const dispatch = useDispatch();
@@ -40,11 +39,13 @@ const Tetris = ({ location, match, history }) => {
   const gameStatus = useSelector(selectGameStatus);
   const checked = useSelector(selectChecked);
   const users = useSelector(selectUsers);
+  const socket = useSelector((state) => state.socket);
   const isMounted = useRef(true);
 
   const { roomName, username } = match.params;
+  const [serverStatus, setServerStatus] = useState(true);
   const [player, updatePlayerPos, resetPlayer, rotateIfPossible] = usePlayer(username);
-  const [grid, setGrid, linesCleared] = useGrid(player, resetPlayer);
+  const [grid, linesCleared] = useGrid(player, resetPlayer, users.length);
   const [score, level, setLevel, lines] = useGameStatus(linesCleared);
   let ready;
 
@@ -76,24 +77,26 @@ const Tetris = ({ location, match, history }) => {
         roomName,
         username,
       }));
+
+      socket.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!');
+        setServerStatus(false);
+      });
     }
+
     return (() => {
       isMounted.current = false;
     });
   }, []);
 
+  if (!serverStatus || checked === null) {
+    return <Loader />;
+  }
+
   const movePlayer = (direction) => {
     if (!checkCollision(player, grid, { x: direction, y: 0 })) {
       updatePlayerPos({ x: direction, y: 0, collided: false });
     }
-  };
-
-  const startGame = () => {
-    // reset grid, player, gameStatus & dropTime
-    dispatch(setGameStatus(1));
-    resetPlayer();
-    dispatch(setDropTime(800));
-    dispatch(setGrid(initGrid()));
   };
 
   const drop = () => {
@@ -138,11 +141,6 @@ const Tetris = ({ location, match, history }) => {
     drop();
   }, dropTime);
 
-  if (checked === null) {
-    // waiting for redux, room not yet checked
-    return <></>;
-  }
-
   return (
     <StyledTetrisWrapper role="button" tabIndex="0" onKeyDown={move}>
       { checked
@@ -163,9 +161,7 @@ const Tetris = ({ location, match, history }) => {
             <StartButton
               mode=""
               disabled={gameStatus === 2} // while playing
-              cb={() => {
-                startGame();
-              }}
+              cb={() => dispatch({ type: 'START_GAME' })}
             />
           </aside>
         </StyledTetris>

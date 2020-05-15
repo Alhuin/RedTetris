@@ -3,7 +3,7 @@ export const GRID_HEIGHT = 20;
 
 export const initGrid = () => Array.from(
   Array(GRID_HEIGHT),
-  () => Array.from(Array(GRID_WIDTH)).fill([0, 'clear']),
+  () => Array.from(Array(GRID_WIDTH)).fill([0, 'clear', 0]),
 );
 
 export const checkParams = (roomName, username, setError, dispatch) => {
