@@ -16,6 +16,7 @@ app.use(cors());
 app.use(routes);
 
 // Create https server if node_env is production, else http
+// openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout localhost.key -out localhost.crt
 const server = (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'production')
   ? https.createServer(
     {
