@@ -1,6 +1,5 @@
 import {
   JOIN_ROOM,
-  SET_CHECKED,
   SET_READY,
   CHECK_ROOM_USER,
   JOIN_ROOM_SUCCESS,
@@ -32,12 +31,7 @@ const socketMiddleware = (store) => (next) => (action) => {
       });
 
       socket.on(JOIN_ROOM_SUCCESS, (data) => {
-        dispatch({ // Init username & roomName and return room usersList
-          type: 'SET_USERS',
-          payload: {
-            users: data.users,
-          },
-        });
+        action.cb(data.users);
       });
 
       socket.on(JOIN_ROOM_ERROR, (errorMsg) => {
@@ -51,8 +45,8 @@ const socketMiddleware = (store) => (next) => (action) => {
           action.history.push('/');
           // prevents setstate in Tetris render
         }
-        dispatch({ type: SET_CHECKED, payload: res.status });
         dispatch({ type: SET_READY, payload: res.status });
+        action.cb(res.status);
       });
       break;
     case SEND_SHADOW:

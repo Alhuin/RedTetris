@@ -16,7 +16,7 @@ import socketMiddleware from './middlewares/socketMiddleware';
 // - custom socketMiddleWare
 let middleware = [];
 middleware = process.env.NODE_ENV === 'development'
-  ? [...middleware, thunk, createLogger, socketMiddleware]
+  ? [...middleware, thunk, createLogger(), socketMiddleware]
   : [...middleware, thunk, socketMiddleware];
 
 const store = createStore(

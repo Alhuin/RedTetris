@@ -18,15 +18,13 @@ function Home() {
 
   useEffect(() => {
     if (isMounted.current) {
-      socket.on('connect_error', () => {
-        console.log('Sorry, there seems to be an issue with the connection!');
-        setServerStatus(false);
-      });
+      socket.on('connect', () => setServerStatus(true));
+      socket.on('connect_error', () => setServerStatus(false));
     }
     return (() => {
       isMounted.current = false;
     });
-  }, []);
+  }, [socket]);
 
   if (!serverStatus) {
     console.log('server down');

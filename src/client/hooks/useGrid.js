@@ -1,21 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  setLinesCleared,
-  incrementLinesCleared,
-  sendShadowSocket, setGameStatus, setDropTime,
+  sendShadowSocket,
+  setGameStatus,
 } from '../redux/actions';
-import { selectGrid, selectLinesCleared } from '../redux/selectors';
 import { GRID_WIDTH, initGrid } from '../components/Tetris/helpers';
 import { SET_SHADOW } from '../redux/actions/types';
 
-export const setGrid = (json) => ({ type: 'SET_GRID', payload: json });
-
-export const useGrid = (player, resetPlayer, nbPlayers) => {
+export const useGrid = (player, resetPlayer, nbPlayers, setDropTime) => {
   const dispatch = useDispatch();
-  const grid = useSelector(selectGrid);
-  const linesCleared = useSelector(selectLinesCleared);
+  const [linesCleared, setLinesCleared] = useState(0);
+  const [grid, setGrid] = useState(initGrid());
   const socket = useSelector((state) => state.socket);
   const opponentShadow = useSelector((state) => state.shadow);
 
@@ -25,14 +21,15 @@ export const useGrid = (player, resetPlayer, nbPlayers) => {
       dispatch({ type: SET_SHADOW, payload: [] });
     }
     dispatch(setGameStatus(1));
-    dispatch(setDropTime(800));
-    dispatch(setGrid(initGrid()));
+    setDropTime(800);
+    setGrid(initGrid());
     resetPlayer();
   };
 
   // builds a fresh grid from the stored one (with merged tetriminos) and draws the current piece
   useEffect(() => {
-    dispatch(setLinesCleared(0));
+    setLinesCleared(0);
+
     const buildShadow = (clearedGrid) => {
       const shadow = [];
       for (let i = 0; i < GRID_WIDTH; i += 1) {
@@ -41,15 +38,14 @@ export const useGrid = (player, resetPlayer, nbPlayers) => {
             .findIndex((cell) => cell[0] !== 0),
         );
       }
-      console.log('newshadow');
-      console.table(shadow);
       return shadow;
     };
 
     const removeClearedLines = (newGrid) => newGrid
       .reduce((ack, line) => {
         if (line.findIndex((cell) => cell[0] === 0) === -1) { // if we find a line with no 0 (full)
-          dispatch(incrementLinesCleared()); // increment linesCleared number
+          // dispatch(incrementLinesCleared()); // increment linesCleared number
+          setLinesCleared((prev) => prev + 1);
           // add a new empty line a the top of the grid
           ack.unshift(new Array(newGrid[0].length).fill([0, 'clear', 0]));
           return ack;
@@ -100,8 +96,15 @@ export const useGrid = (player, resetPlayer, nbPlayers) => {
     };
 
     // set new grid
-    dispatch(setGrid(updateGrid(grid)));
-  }, [player, resetPlayer, opponentShadow]);
+    setGrid(updateGrid(grid));
+  }, [
+    player.collided,
+    player.pos.x,
+    player.pos.y,
+    player.tetrimino,
+    resetPlayer,
+    opponentShadow,
+  ]);
 
   useEffect(() => {
     socket.on('start', () => {

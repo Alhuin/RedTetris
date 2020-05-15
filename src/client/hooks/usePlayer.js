@@ -1,16 +1,14 @@
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useState } from 'react';
 
-import { selectPlayer } from '../redux/selectors';
-
-import { randomTetrimino } from '../components/Tetris/tetriminos';
+import { randomTetrimino, TETRIMINOS } from '../components/Tetris/tetriminos';
 import { checkCollision, GRID_WIDTH } from '../components/Tetris/helpers';
 
-export const setPlayer = (json, player) => ({ type: 'SET_PLAYER', data: json, player });
-
-export const usePlayer = (username) => {
-  const dispatch = useDispatch();
-  const player = useSelector(selectPlayer);
+export const usePlayer = () => {
+  const [player, setPlayer] = useState({
+    pos: { x: GRID_WIDTH / 2 - 2, y: 0 },
+    tetrimino: TETRIMINOS[0].shape,
+    collided: false,
+  });
 
   const rotate = (matrix, direction) => {
     const rotatedTetrimino = matrix.map((_, index) => matrix.map((col) => col[index]));
@@ -35,29 +33,29 @@ export const usePlayer = (username) => {
         return;
       }
     }
-    dispatch(setPlayer(playerCopy, username));
+    setPlayer(playerCopy);
   };
 
   const updatePlayerPos = ({ x, y, collided }) => {
-    dispatch(setPlayer({ // ({}) necessary to spread prev
+    setPlayer({ // ({}) necessary to spread prev
       ...player,
       pos: {
         x: player.pos.x += x,
         y: player.pos.y += y,
       },
       collided,
-    }, username));
+    });
   };
 
   const resetPlayer = useCallback(() => {
-    dispatch(setPlayer({
+    setPlayer({
       pos: {
         x: GRID_WIDTH / 2 - 2, // horizontally center
         y: 0,
       },
       tetrimino: randomTetrimino().shape,
       collided: false,
-    }, username));
+    });
   }, []);
 
   return [player, updatePlayerPos, resetPlayer, rotateIfPossible];
