@@ -2,19 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import StyledStartButton from '../styles/StyledStartButton';
 
-const StartButton = ({ mode, cb, disabled }) => (
-  <StyledStartButton type="button" onClick={cb} disabled={disabled}>
+const StartButton = ({ mode, cb }) => (
+  <StyledStartButton type="button" onClick={cb}>
     Start
     {mode}
   </StyledStartButton>
 );
 
 StartButton.propTypes = {
-  mode: PropTypes.string.isRequired,
+  mode: PropTypes.string,
   cb: PropTypes.func,
 };
 
 StartButton.defaultProps = {
+  mode: '',
   cb: () => console.log('StartButton cb()'),
 };
 

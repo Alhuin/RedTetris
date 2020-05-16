@@ -20,7 +20,7 @@ const initialState = {
   username: '',
   roomName: '',
   error: '',
-  gameStatus: 0,
+  gameStatus: 0, // 0 not launched, 1 launched, 2 ended
   shadow: [],
   ready: false,
   users: [],

@@ -36,6 +36,7 @@ const Tetris = ({ location, match, history }) => {
 
   const { roomName, username } = match.params;
 
+  const [isAdmin, setIsAdmin] = useState(null);
   const [checked, setChecked] = useState(null);
   const [dropTime, setDropTime] = useState(null);
   const [player, updatePlayerPos, resetPlayer, rotateIfPossible] = usePlayer();
@@ -100,7 +101,7 @@ const Tetris = ({ location, match, history }) => {
       updatePlayerPos({ x: 0, y: 1, collided: false });
     } else {
       if (player.pos.y < 1) {
-        dispatch(setGameStatus(3));
+        dispatch(setGameStatus(2));
         setDropTime(null);
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
@@ -134,6 +135,13 @@ const Tetris = ({ location, match, history }) => {
     }
   };
 
+  if (isAdmin === null) {
+    users.forEach((user) => {
+      if (username === user.name) {
+        setIsAdmin(user.isAdmin);
+      }
+    });
+  }
 
   useInterval(() => {
     if (serverStatus) {
@@ -155,8 +163,8 @@ const Tetris = ({ location, match, history }) => {
         <StyledTetris>
           <Grid grid={grid} />
           <aside>
-            {gameStatus === 3
-              ? <Card gameOver={gameStatus === 3} text={`Game Over: ${score} points`} />
+            {gameStatus === 2
+              ? <Card gameOver={gameStatus === 2} text={`Game Over: ${score} points`} />
               : (
                 <div>
                   <Card text={`Score: ${score}`} />
@@ -165,13 +173,8 @@ const Tetris = ({ location, match, history }) => {
                   <Lobby users={users} />
                 </div>
               )}
-            {
-              <StartButton
-                mode=""
-                disabled={gameStatus === 2} // while playing
-                cb={() => dispatch({ type: 'START_GAME' })}
-              />
-            }
+            { isAdmin && gameStatus !== 1
+              && <StartButton cb={() => dispatch({ type: 'START_GAME' })} />}
           </aside>
         </StyledTetris>
       )}
