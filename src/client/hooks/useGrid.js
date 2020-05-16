@@ -22,7 +22,7 @@ export const useGrid = (player, resetPlayer, nbPlayers, setDropTime) => {
       dispatch({ type: SET_SHADOW, payload: [] });
     }
     dispatch(setGameStatus(1));
-    setDropTime(800);
+    setDropTime((0.8 - ((0) * 0.007)) ** (0) * 1000);
     setGrid(initGrid());
     resetPlayer();
   };

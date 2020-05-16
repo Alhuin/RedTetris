@@ -93,9 +93,10 @@ const Tetris = ({ location, match, history }) => {
   // move down each dropTime
 
   const drop = () => {
+    // official speedCurve = https://harddrop.com/wiki/Tetris_Worlds
     if (lines >= (level + 1) * 10) {
       setLevel(level + 1);
-      setDropTime(dropTime * 0.5);
+      setDropTime((0.8 - ((level) * 0.007)) ** (level) * 1000);
     }
     if (!checkCollision(player, grid, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
