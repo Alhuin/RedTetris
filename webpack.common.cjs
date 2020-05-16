@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -15,6 +16,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: /\.(png|jpe?g|gif)$/,
@@ -35,7 +44,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.png', '.js', '.css'],
+    extensions: ['.png', '.js', '.css', '.scss'],
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -45,6 +54,10 @@ module.exports = {
       favicon: './src/client/favicon.ico',
       meta: { charset: 'UTF-8' },
       filename: './index.html',
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
+      DEBUG: false,
     }),
   ],
   output: {

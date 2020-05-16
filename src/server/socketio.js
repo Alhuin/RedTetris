@@ -15,7 +15,7 @@ const createUsersList = (room) => room.users.map(
   }),
 );
 
-const joinRoom = (io, socket, room, user) => {
+const joinRoom = (io, socket, room, user, cb) => {
   loginfo('joinRoom(socket:%o, room:%o)', user.name, room.name);
 
   // Join socket.io room
@@ -34,9 +34,8 @@ const joinRoom = (io, socket, room, user) => {
       loginfo('user %o is admin', user.name);
       user.isAdmin = true;
     }
+    cb();
     io.in(room.name).emit(events.JOIN_ROOM_SUCCESS, {
-      roomName: room.name,
-      username: user.name,
       users: createUsersList(room),
     });
   });
@@ -68,7 +67,7 @@ export default function handleSocket(socket, io) {
 
   const user = User.init(socket);
 
-  socket.on(events.JOIN_ROOM, ({ roomName, username }) => {
+  socket.on(events.JOIN_ROOM, ({ roomName, username }, callback) => {
     loginfo('Recieved joinRoom %o from %o', roomName, username);
 
     let room = rooms[roomName];
@@ -85,7 +84,7 @@ export default function handleSocket(socket, io) {
     } else if (room.users.length >= 2) {
       socket.emit(events.JOIN_ROOM_ERROR, 'This room is full !');
     } else {
-      joinRoom(io, socket, room, user);
+      joinRoom(io, socket, room, user, callback);
     }
   });
 
@@ -109,47 +108,38 @@ export default function handleSocket(socket, io) {
     cb({ status, data });
   });
 
+  socket.on(events.SEND_SHADOW, (roomName, username, data, cb) => {
+    const room = rooms[roomName];
+    let status = false;
+    let msg = null;
+
+    if (room === undefined) {
+      msg = 'room not in db';
+    } else {
+      for (const client in room.users) {
+        if (room.users[client].name === username) {
+          room.users[client].shadow = data.shadow;
+          status = true;
+        }
+      }
+      if (!status) {
+        msg = 'user not in room';
+      }
+    }
+    socket.to(roomName).emit(events.SET_SHADOW, data.shadow);
+    // cb({ status, msg });
+  });
+
   socket.on(events.START_GAME, () => {
     const room = rooms[user.room];
     // const r = initGame(room);
     // loginfo('user %o launched %o game in room %o', user.name, room.name);
-    io.in(room.name).emit('start', room.pieces);
+    io.in(room.name).emit('start');
     // room.launched = true;
-  });
-
-  socket.on('newPiece', () => {
-    user.me.x = 4;
-    user.me.y = 0;
-    user.pieceIndex += 1;
   });
 
   socket.on(events.DISCONNECT, () => {
     loginfo('Client disconnected');
     leaveRooms(socket, user);
-  });
-
-  socket.on('move', (where) => {
-    const room = rooms[user.room];
-    switch (where) {
-      case 'up':
-        user.me.y -= 1;
-        break;
-      case 'down':
-        user.me.y += 1;
-        break;
-      case 'left':
-        user.me.x = user.me.x <= 0
-          ? user.me.x
-          : user.me.x - 1;
-        break;
-      case 'right':
-        user.me.x = user.me.x + room.pieces[user.pieceIndex][user.pieceState].width < 10
-          ? user.me.x + 1
-          : user.me.x;
-        break;
-      default:
-        break;
-    }
-    io.in(room.name).emit('userMoved', user.me);
   });
 }

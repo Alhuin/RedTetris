@@ -12,11 +12,16 @@ import socketMiddleware from './middlewares/socketMiddleware';
 
 // Initialize redux store and apply those middlewares:
 // - redux-thunk (to get dispatch inside action creators, see redux/actions/index.js)
-// - redux-logger
+// - redux-logger in dev mode
 // - custom socketMiddleWare
+let middleware = [];
+middleware = process.env.NODE_ENV === 'development'
+  ? [...middleware, thunk, createLogger(), socketMiddleware]
+  : [...middleware, thunk, socketMiddleware];
+
 const store = createStore(
   reducer,
-  applyMiddleware(thunk, createLogger(), socketMiddleware),
+  applyMiddleware(...middleware),
 );
 
 // Render app inside redux context
