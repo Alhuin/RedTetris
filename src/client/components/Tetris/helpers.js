@@ -4,11 +4,18 @@ export const GRID_HEIGHT = 20;
 export const initGrid = () => Array.from(
   Array(GRID_HEIGHT),
   () => Array.from(Array(GRID_WIDTH)).fill([0, 'clear', 0]),
+
+  // Cell pattern
+  //  [
+  //    <0 / letter>,                 0: empty; letter: tetrimino letter;
+  //    <'clear' / 'merged'>,         'clear': do not redraw cell next render; 'merged': do redraw;
+  //    <0 / 1>,                      1: opponent shadow on this cell; 0: no opponent shadow;
+  //  ]
 );
 
 export const checkParams = (roomName, username, setError, dispatch) => {
-  if (roomName === '' || username === '') {
-    dispatch(setError('Fields can\'t be blank'));
+  if (!username.match('^[a-zA-Z]{3,}$') || !roomName.match('^[a-zA-Z]{3,}$')) {
+    dispatch(setError('Inputs must be at least 3 length, can contain only letters.'));
     return false;
   }
   return true;

@@ -5,6 +5,8 @@ import {
   JOIN_ROOM,
   CHECK_ROOM_USER,
   SEND_SHADOW,
+  SET_USERS,
+  SET_SHADOW, INIT_USER,
 } from './types';
 
 /**
@@ -14,17 +16,21 @@ import {
 export const setError = (payload) => ({ type: SET_ERROR, payload });
 export const setGameStatus = (payload) => ({ type: SET_GAME_STATUS, payload });
 export const setReady = (payload) => ({ type: SET_READY, payload });
+export const setUsers = (payload) => ({ type: SET_USERS, payload });
+export const setShadow = (payload) => ({ type: SET_SHADOW, payload });
+export const initUser = (payload) => ({ type: INIT_USER, payload });
 
+export const joinRoom = (payload) => ({ type: JOIN_ROOM, payload });
 /**
  *    Action creators
  *    (dispatch provided by redux-thunk)
  */
 
-export const joinRoomSocket = (data, cb) => (dispatch) => {
-  if (data.username === '' || data.roomName === '') {
-    dispatch(setError('Fields can\'t be blank !'));
+export const joinRoomSocket = (data) => (dispatch) => {
+  if (!data.username.match('^[a-zA-Z]{3,}$') || !data.roomName.match('^[a-zA-Z]{3,}$')) {
+    dispatch(setError('Inputs must be at least 3 length, can contain only cap/min letters.'));
   } else {
-    dispatch({ type: JOIN_ROOM, data, cb });
+    dispatch({ type: JOIN_ROOM, data });
   }
 };
 

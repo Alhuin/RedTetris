@@ -5,6 +5,7 @@ import {
   SET_READY,
   INIT_USER,
   SET_SHADOW,
+  SET_USERS,
 } from './actions/types';
 import { serverUrl } from '../config';
 
@@ -22,6 +23,7 @@ const initialState = {
   gameStatus: 0,
   shadow: [],
   ready: false,
+  users: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -34,6 +36,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         ready: action.payload,
+      };
+    case SET_USERS:
+      return {
+        ...state,
+        users: action.payload,
       };
     case INIT_USER: {
       return {

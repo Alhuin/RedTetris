@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { checkCollision, checkParams } from './helpers';
-import { selectGameStatus } from '../../redux/selectors';
+import { selectGameStatus, selectSocket, selectUsers } from '../../redux/selectors';
 import {
   setGameStatus,
   setError,
@@ -30,12 +30,12 @@ import Loader from '../Loader';
 const Tetris = ({ location, match, history }) => {
   const dispatch = useDispatch();
   const gameStatus = useSelector(selectGameStatus);
-  const socket = useSelector((state) => state.socket);
+  const socket = useSelector(selectSocket);
+  const users = useSelector(selectUsers);
   const isMounted = useRef(true);
 
   const { roomName, username } = match.params;
 
-  const [users, setUsers] = useState([]);
   const [checked, setChecked] = useState(null);
   const [dropTime, setDropTime] = useState(null);
   const [player, updatePlayerPos, resetPlayer, rotateIfPossible] = usePlayer();
@@ -64,7 +64,7 @@ const Tetris = ({ location, match, history }) => {
             dispatch(joinRoomSocket({
               roomName,
               username,
-            }, setUsers));
+            }));
           }
         }
         // check if user is allowed to access this room
@@ -165,11 +165,13 @@ const Tetris = ({ location, match, history }) => {
                   <Lobby users={users} />
                 </div>
               )}
-            <StartButton
-              mode=""
-              disabled={gameStatus === 2} // while playing
-              cb={() => dispatch({ type: 'START_GAME' })}
-            />
+            {
+              <StartButton
+                mode=""
+                disabled={gameStatus === 2} // while playing
+                cb={() => dispatch({ type: 'START_GAME' })}
+              />
+            }
           </aside>
         </StyledTetris>
       )}

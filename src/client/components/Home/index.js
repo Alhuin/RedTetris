@@ -3,7 +3,12 @@ import { Redirect } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import { selectReady, selectRoomName, selectUsername } from '../../redux/selectors';
+import {
+  selectReady,
+  selectRoomName,
+  selectSocket,
+  selectUsername,
+} from '../../redux/selectors';
 
 import Login from './Login';
 import Loader from '../Loader';
@@ -12,7 +17,7 @@ function Home() {
   const roomName = useSelector(selectRoomName);
   const username = useSelector(selectUsername);
   const ready = useSelector(selectReady);
-  const socket = useSelector((state) => state.socket);
+  const socket = useSelector(selectSocket);
   const isMounted = useRef(true);
   const [serverStatus, setServerStatus] = useState(true);
 

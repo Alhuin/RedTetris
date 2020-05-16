@@ -7,13 +7,14 @@ import {
 } from '../redux/actions';
 import { GRID_WIDTH, initGrid } from '../components/Tetris/helpers';
 import { SET_SHADOW } from '../redux/actions/types';
+import { selectShadow, selectSocket } from '../redux/selectors';
 
 export const useGrid = (player, resetPlayer, nbPlayers, setDropTime) => {
   const dispatch = useDispatch();
   const [linesCleared, setLinesCleared] = useState(0);
   const [grid, setGrid] = useState(initGrid());
-  const socket = useSelector((state) => state.socket);
-  const opponentShadow = useSelector((state) => state.shadow);
+  const socket = useSelector(selectSocket);
+  const opponentShadow = useSelector(selectShadow);
 
   const startGame = () => {
     // reset grid, player, gameStatus & dropTime
@@ -111,7 +112,7 @@ export const useGrid = (player, resetPlayer, nbPlayers, setDropTime) => {
       console.log('start recieved');
       startGame();
     });
-    socket.on('UPDATE_SHADOW', (shadow) => {
+    socket.on(SET_SHADOW, (shadow) => {
       console.log('recieved updateShadow');
       dispatch({ type: SET_SHADOW, payload: shadow });
     });

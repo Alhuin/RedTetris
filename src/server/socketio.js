@@ -126,7 +126,7 @@ export default function handleSocket(socket, io) {
         msg = 'user not in room';
       }
     }
-    socket.to(roomName).emit('UPDATE_SHADOW', data.shadow);
+    socket.to(roomName).emit(events.SET_SHADOW, data.shadow);
     // cb({ status, msg });
   });
 
