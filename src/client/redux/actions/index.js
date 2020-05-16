@@ -1,5 +1,6 @@
 import {
   SET_ERROR,
+  SET_DARKMODE,
   SET_GAME_STATUS,
   SET_READY,
   JOIN_ROOM,
@@ -14,6 +15,7 @@ import {
  */
 
 export const setError = (payload) => ({ type: SET_ERROR, payload });
+export const setDarkmode = () => ({ type: SET_DARKMODE });
 export const setGameStatus = (payload) => ({ type: SET_GAME_STATUS, payload });
 export const setReady = (payload) => ({ type: SET_READY, payload });
 export const setUsers = (payload) => ({ type: SET_USERS, payload });

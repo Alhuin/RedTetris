@@ -11,6 +11,7 @@ import {
   setError,
   joinRoomSocket,
   checkRoomSocket,
+  setDarkmode,
 } from '../../redux/actions';
 
 // Custom Hooks
@@ -25,6 +26,7 @@ import Card from './Card';
 import Lobby from './Lobby';
 import StartButton from './StartButtton';
 import { StyledTetris, StyledTetrisWrapper } from '../styles/StyledTetris';
+import DarkButton from './DarkButton';
 import Loader from '../Loader';
 
 const Tetris = ({ location, match, history }) => {
@@ -33,7 +35,6 @@ const Tetris = ({ location, match, history }) => {
   const socket = useSelector(selectSocket);
   const users = useSelector(selectUsers);
   const isMounted = useRef(true);
-
   const { roomName, username } = match.params;
 
   const [isAdmin, setIsAdmin] = useState(null);
@@ -176,6 +177,7 @@ const Tetris = ({ location, match, history }) => {
               )}
             { isAdmin && gameStatus !== 1
               && <StartButton cb={() => dispatch({ type: 'START_GAME' })} />}
+            <DarkButton cb={() => dispatch(setDarkmode())} />
           </aside>
         </StyledTetris>
       )}

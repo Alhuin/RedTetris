@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 // Redux
-import { joinRoomSocket, setReady, setError } from '../../redux/actions';
+import {
+  joinRoomSocket,
+  setReady,
+  setError,
+  setDarkmode,
+} from '../../redux/actions';
 import { selectError } from '../../redux/selectors';
 
 // Components
@@ -11,6 +16,7 @@ import CustomAlert from './Alert';
 import JoinButton from './JoinButton';
 import { StyledLogin, StyledLoginWrapper } from '../styles/StyledLogin';
 import StyledLogo from '../styles/StyledLogo';
+import DarkButton from '../Tetris/DarkButton';
 
 const Login = ({ ready }) => {
   const error = useSelector(selectError);
@@ -49,6 +55,7 @@ const Login = ({ ready }) => {
       />
       { error !== ''
        && <CustomAlert severity="warning" message={error} close={() => dispatch(setError(''))} />}
+      <DarkButton cb={() => dispatch(setDarkmode())} />
     </StyledLoginWrapper>
   );
 };

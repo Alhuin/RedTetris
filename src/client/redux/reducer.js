@@ -2,6 +2,7 @@ import socketio from 'socket.io-client';
 import {
   SET_GAME_STATUS,
   SET_ERROR,
+  SET_DARKMODE,
   SET_READY,
   INIT_USER,
   SET_SHADOW,
@@ -24,6 +25,7 @@ const initialState = {
   shadow: [],
   ready: false,
   users: [],
+  darkmode: true,
 };
 
 const reducer = (state = initialState, action) => {
@@ -42,23 +44,29 @@ const reducer = (state = initialState, action) => {
         ...state,
         users: action.payload,
       };
-    case INIT_USER: {
+    case INIT_USER:
       return {
         ...state,
         username: action.payload.username,
         roomName: action.payload.roomName,
         ready: true,
       };
-    }
     case SET_ERROR:
       return {
         ...state,
         error: action.payload,
       };
+    case SET_DARKMODE: {
+      document.body.style.background = state.darkmode ? 'grey' : 'black';
+      return {
+        ...state,
+        darkmode: !state.darkmode,
+      };
+    }
 
-      /**
-       *    Game actions
-       */
+    /**
+     *    Game actions
+     */
 
     case SET_SHADOW:
       return {
