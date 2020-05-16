@@ -6,9 +6,9 @@ const init = (socket) => ({
   socket,
   room: '',
   isAdmin: false,
-  me: { x: 4, y: 0 },
   pieceIndex: 0,
   pieceState: 0,
+  shadow: [],
 });
 
 export default {

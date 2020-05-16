@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import StyledCell from '../styles/StyledCell';
-import { TETRIMINOS } from './tetriminos';
+import { TETRIMINOS } from '../constants/tetriminos';
 
 const Cell = ({ type }) => <StyledCell type={type} color={TETRIMINOS[type].color} />;
 

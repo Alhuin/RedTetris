@@ -1,6 +1,18 @@
 import {
-  JOIN_ROOM, SET_CHECKED, SET_READY, CHECK_ROOM_USER, JOIN_ROOM_SUCCESS, JOIN_ROOM_ERROR, SET_ERROR,
+  JOIN_ROOM,
+  CHECK_ROOM_USER,
+  JOIN_ROOM_SUCCESS,
+  JOIN_ROOM_ERROR,
+  SEND_SHADOW,
+  SET_SHADOW,
 } from '../redux/actions/types';
+import {
+  initUser,
+  setError,
+  setReady,
+  setShadow,
+  setUsers,
+} from '../redux/actions';
 
 // The socket middleware handles redux and socketIo dispatching
 // If one of those actions are catched, they are handled here
@@ -13,21 +25,19 @@ const socketMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
     case JOIN_ROOM:
       console.log('middleware JOIN_ROOM');
-      socket.emit(JOIN_ROOM, action.data);
+      socket.emit(JOIN_ROOM, action.data, () => {
+        dispatch(initUser({
+          username: action.data.username,
+          roomName: action.data.roomName,
+        }));
+      });
 
       socket.on(JOIN_ROOM_SUCCESS, (data) => {
-        dispatch({ // Init username & roomName and return room usersList
-          type: 'INIT_USER',
-          payload: {
-            username: data.username,
-            roomName: data.roomName,
-            users: data.users,
-          },
-        });
+        dispatch(setUsers(data.users));
       });
 
       socket.on(JOIN_ROOM_ERROR, (errorMsg) => {
-        dispatch({ type: SET_ERROR, payload: errorMsg });
+        dispatch(setError(errorMsg));
       });
       break;
     case CHECK_ROOM_USER:
@@ -37,9 +47,21 @@ const socketMiddleware = (store) => (next) => (action) => {
           action.history.push('/');
           // prevents setstate in Tetris render
         }
-        dispatch({ type: SET_CHECKED, payload: res.status });
-        dispatch({ type: SET_READY, payload: res.status });
+        dispatch(setReady(res.status));
+        // dispatch({ type: SET_READY, payload: res.status });
+        action.cb(res.status);
       });
+      break;
+    case SEND_SHADOW:
+      console.log('middleware sendShadow');
+      socket.emit(SEND_SHADOW, state.roomName, state.username, action.data);
+      break;
+    case SET_SHADOW:
+      dispatch(setShadow(action.data.shadow));
+      // dispatch({ type: SET_SHADOW, payload: action.data.shadow });
+      break;
+    case 'START_GAME':
+      socket.emit('startGame');
       break;
     default:
       console.log('the next action:', action);
