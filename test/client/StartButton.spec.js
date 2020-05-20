@@ -19,12 +19,21 @@ describe('<StartButton /> with no props', () => {
   it('should match the snapshot no props', () => {
     expect(container).toMatchSnapshot();
   });
+
+  it('should have a default onClick prop', () => {
+    const { log } = console;
+    console.log = jest.fn();
+    container.props.onClick();
+    expect(console.log.mock.calls.length).toBe(1);
+    expect(console.log).toHaveBeenCalledWith('StartButton cb()');
+    console.log = log;
+  });
 });
 
 
 describe('<StartButton /> with props', () => {
   const renderer = new ShallowRenderer();
-  renderer.render(<StartButton mode="3" type="button" cb={() => console.log('test')}/>);
+  renderer.render(<StartButton mode="3" cb={() => console.log('test')} />);
   const container = renderer.getRenderOutput();
 
   it('should match the snapshot props', () => {
@@ -36,29 +45,22 @@ describe('<StartButton /> with props', () => {
     expect(container.props.children[0]).toEqual('Start');
     expect(container.props.children[1]).toEqual('3');
   });
-  // container.props = {
-  // "children": ["Start", "3"],
-  // "disabled": true,
-  // "onClick": ()=>true, => hasOwnProperty doesnt work with onClick O.o'
-  // "type": "button",
-  // "mode": "3"
-  // }
+
   it('should have a type and a onClick prop', () => { // cb functions are not tested here
     expect(hasOwnProperty.call(container.props, 'onClick')).toBe(true);
     expect(hasOwnProperty.call(container.props, 'type')).toBe(true);
   });
 
-  it('should have proper props', () => {
-    // We don't need for testing to send a console.log() callback.
-    // We can mabe send a ()=>'testValue' callback and test the return of that function.
-    // But with these lines we learn how to test a console.log output.
-    const { log } = console; // save the function log ...
-    console.log = jest.fn(); // ... and replace it by jest one
-    container.props.onClick(); // launching our console.log
-    // The first argument of the first call to the function was 'hello'
-    expect(console.log).toHaveBeenCalledWith('test'); // test it
-    console.log = log; // get back our log function...
-    console.log(container.props); // ... to use it
+  it('should have proper type', () => {
     expect(container.props.type).toBe('button');
+  });
+
+  it('should have a proper onClick prop', () => {
+    const { log } = console;
+    console.log = jest.fn();
+    container.props.onClick();
+    expect(console.log.mock.calls.length).toBe(1);
+    expect(console.log).toHaveBeenCalledWith('test');
+    console.log = log;
   });
 });

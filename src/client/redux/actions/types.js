@@ -1,6 +1,7 @@
 // TO REDUX
 export const SET_ERROR = 'SET_ERROR';
 export const SET_READY = 'SET_READY';
+export const SET_DARKMODE = 'SET_DARKMODE';
 export const INIT_USER = 'INIT_USER';
 export const SET_SHADOW = 'SET_SHADOW';
 export const SET_USERS = 'SET_USERS';

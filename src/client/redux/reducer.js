@@ -57,7 +57,11 @@ const reducer = (state = initialState, action) => {
         error: action.payload,
       };
     case SET_DARKMODE: {
-      document.body.style.background = state.darkmode ? 'grey' : 'black';
+      // eslint-disable-next-line no-undef
+      if (document) {
+        // eslint-disable-next-line no-undef
+        document.body.style.background = state.darkmode ? 'grey' : 'black';
+      }
       return {
         ...state,
         darkmode: !state.darkmode,
