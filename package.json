@@ -16,7 +16,8 @@
     "test": "./node_modules/.bin/jest",
     "test:cover": "./node_modules/.bin/jest --coverage",
     "deploy": "gh-pages -d src/client/dist",
-    "publish": "npm run client-dist && npm run deploy"
+    "publish": "npm run client-dist && npm run deploy",
+    "parrot": "curl parrot.live"
   },
   "repository": {
     "type": "git",
